@@ -1,0 +1,56 @@
+# === 기본 빌드 무시 ===
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# === STS ===
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# === IntelliJ ===
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# === NetBeans ===
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# === VSCode ===
+.vscode/
+
+# === 운영체제 불필요 파일 ===
+.DS_Store
+Thumbs.db
+
+# === 환경변수, 설정 파일 ===
+.env
+
+# === 로그 ===
+*.log
+logs/
+
+# === 테스트 커버리지 ===
+coverage/
+*.lcov
+
+# === Spring Profiles ===
+application-*.yml
+application-*.properties
