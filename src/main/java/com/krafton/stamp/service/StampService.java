@@ -27,9 +27,11 @@ public class StampService {
     public void collectStamp(Long userId, Long stampId) {
         User user = getUserOrThrow(userId);
         Stamp stamp = getStampOrThrow(stampId);
+        giveStamp(user, stamp);
+    }
 
-        // 이미 수집한 우표인지 확인
-        Optional<UserStamp> optional = userStampRepository.findByUserIdAndStampId(userId, stampId);
+    private void giveStamp(User user, Stamp stamp) {
+        Optional<UserStamp> optional = userStampRepository.findByUserIdAndStampId(user.getId(), stamp.getId());
 
         if (optional.isPresent()) {
             optional.get().increaseCount();
@@ -55,6 +57,7 @@ public class StampService {
     /**
      * 전체 우표 목록 (도감)
      */
+    @Transactional(readOnly = true)
     public List<Stamp> getAllStamps() {
         return stampRepository.findAll();
     }
@@ -62,6 +65,7 @@ public class StampService {
     /**
      * 특정 우표 상세 보기
      */
+    @Transactional(readOnly = true)
     public Stamp getStampDetail(Long stampId) {
         return getStampOrThrow(stampId);
     }
@@ -82,26 +86,11 @@ public class StampService {
      */
     public void rewardStampByMission(Long userId, String siteUrl, Rarity rarity) {
         User user = getUserOrThrow(userId);
-
-        // 1. 미션이 unlock한 rarity의 stamp 찾기
         Stamp stamp = stampRepository.findBySiteUrlAndRarity(siteUrl, rarity)
                 .orElseThrow(() -> new IllegalStateException("해당 사이트와 희귀도에 맞는 우표가 없습니다."));
-
-        // 2. 유저가 이미 보유한지 확인 후 지급 or 카운트 증가
-        Optional<UserStamp> optional = userStampRepository.findByUserIdAndStampId(userId, stamp.getId());
-
-        if (optional.isPresent()) {
-            optional.get().increaseCount();
-        } else {
-            UserStamp newStamp = UserStamp.builder()
-                    .user(user)
-                    .stamp(stamp)
-                    .count(1)
-                    .collectedAt(LocalDateTime.now())
-                    .build();
-            userStampRepository.save(newStamp);
-        }
+        giveStamp(user, stamp); // ✅ 중복 제거
     }
+
 
     @Transactional
     public void upgradeStamp(Long userId, Long fromStampId) {
@@ -125,6 +114,12 @@ public class StampService {
         Stamp stamp = stampRepository.findById(stampId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 우표입니다."));
         stampRepository.delete(stamp);
+    }
+
+    //카테고리 별 도감 조회용 메소드
+    @Transactional(readOnly = true)
+    public List<Stamp> getStampsByCategory(Category category) {
+        return stampRepository.findByCategory(category);
     }
 
 

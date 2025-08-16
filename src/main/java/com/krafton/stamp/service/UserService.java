@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -19,14 +21,31 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto signup(UserSignupRequestDto req) {
-        // 중복 체크 등은 필요 시 추가
-        User user = User.builder()
-                .username(req.getUsername())
-                .email(req.getEmail())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .score(0)
-                .build();
-        return new UserResponseDto(userRepository.save(user));
+        Optional<User> existing = userRepository.findByEmail(req.getEmail());
+        if (existing.isPresent()) {
+            if (existing.get().getProvider() != null) {
+                // 이미 Google 계정으로 가입된 유저
+                throw new IllegalStateException("해당 이메일은 Google 계정으로 가입되어 있습니다.");
+            } else {
+                // 일반 가입 유저 중복
+                throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            }
+        }
+
+        // 🔒 현재는 Google 로그인만 허용 → 아예 차단
+        throw new UnsupportedOperationException("현재는 Google 로그인을 통한 가입만 지원합니다.");
+
+        // 🔽 만약 일반 회원가입도 열어두려면 이 아래 코드 주석 해제
+    /*
+    User user = User.builder()
+            .username(req.getUsername())
+            .email(req.getEmail())
+            .password(passwordEncoder.encode(req.getPassword()))
+            .score(0)
+            .build();
+
+    return new UserResponseDto(userRepository.save(user));
+    */
     }
 
     public UserResponseDto getById(Long id) {

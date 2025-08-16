@@ -1,8 +1,6 @@
 package com.krafton.stamp.repository;
 
-import com.krafton.stamp.domain.Stamp;
 import com.krafton.stamp.domain.User;
-import com.krafton.stamp.domain.UserStamp;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

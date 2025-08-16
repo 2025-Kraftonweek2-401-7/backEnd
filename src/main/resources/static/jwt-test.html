@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JWT 테스트</title>
+</head>
+<body>
+<h1>JWT 토큰 테스트</h1>
+<p id="status">로그인 처리 중...</p>
+<script>
+    // 1. 쿼리 파라미터에서 token 추출
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    // 2. 있으면 localStorage에 저장
+    if (token) {
+        localStorage.setItem("jwt", token);
+        document.getElementById("status").innerText = "✅ 토큰 저장 완료!";
+        console.log("토큰:", token);
+
+        // 👉 저장된 토큰으로 API 테스트 (예시 URL 수정 가능)
+        fetch("http://localhost:8080/api/me/stamps", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log("API 응답", data);
+                document.body.innerHTML += "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+            })
+            .catch(err => {
+                document.body.innerHTML += "<p style='color:red'>API 요청 실패: " + err + "</p>";
+            });
+
+    } else {
+        document.getElementById("status").innerText = "❌ 토큰 없음. 로그인 실패";
+    }
+</script>
+</body>
+</html>

@@ -17,21 +17,27 @@ public class Stamp {
 
     private String name;
     private String imageUrl;
-    private String siteUrl; //ex : gitHub
+    private String siteUrl;
 
-    @Enumerated(EnumType.STRING) // ✅ Enum을 문자열로 저장
+    @Enumerated(EnumType.STRING)
     private Rarity rarity;
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false) // ❗ 필수로 할 경우
+    private Category category;  // ✅ 카테고리 필드 추가
 
     @Builder
-    public Stamp(String name, String imageUrl, String siteUrl, Rarity rarity, String description) {
+    public Stamp(String name, String imageUrl, String siteUrl,
+                 Rarity rarity, String description, Category category) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.siteUrl = siteUrl;
         this.rarity = rarity;
         this.description = description;
+        this.category = category;
     }
 }
+
 

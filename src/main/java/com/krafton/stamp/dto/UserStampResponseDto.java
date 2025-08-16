@@ -1,5 +1,6 @@
 package com.krafton.stamp.dto;
 
+import com.krafton.stamp.domain.Category;
 import com.krafton.stamp.domain.Rarity;
 import com.krafton.stamp.domain.UserStamp;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class UserStampResponseDto {
     private Rarity rarity;
     private final int count;
     private final int level;
+    private final Category category;
 
     public UserStampResponseDto(UserStamp userStamp) {
         this.stampId = userStamp.getStamp().getId();
@@ -21,5 +23,6 @@ public class UserStampResponseDto {
         this.rarity = userStamp.getStamp().getRarity();
         this.count = userStamp.getCount();
         this.level = userStamp.getLevel();
+        this.category = userStamp.getStamp().getCategory();
     }
 }

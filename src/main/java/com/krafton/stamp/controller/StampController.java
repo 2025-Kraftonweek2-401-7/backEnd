@@ -1,5 +1,6 @@
 package com.krafton.stamp.controller;
 
+import com.krafton.stamp.domain.Category;
 import com.krafton.stamp.dto.StampResponseDto;
 import com.krafton.stamp.dto.UserStampResponseDto;
 import com.krafton.stamp.service.StampService;
@@ -42,5 +43,14 @@ public class StampController {
         stampService.deleteStamp(stampId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/category/{category}")
+    @Operation(summary = "카테고리별 우표 조회", description = "카테고리에 해당하는 우표 목록 반환")
+    public ResponseEntity<List<StampResponseDto>> getByCategory(@PathVariable Category category) {
+        var list = stampService.getStampsByCategory(category)
+                .stream().map(StampResponseDto::new).toList();
+        return ResponseEntity.ok(list);
+    }
+
 
 }

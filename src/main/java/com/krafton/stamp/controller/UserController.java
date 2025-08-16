@@ -1,14 +1,18 @@
 package com.krafton.stamp.controller;
 
+import com.krafton.stamp.dto.OAuthUserResponseDto;
 import com.krafton.stamp.dto.UserResponseDto;
 import com.krafton.stamp.dto.UserSignupRequestDto;
 import com.krafton.stamp.dto.UserUpdateRequestDto;
+import com.krafton.stamp.security.PrincipalUser;
 import com.krafton.stamp.service.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +23,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Hidden
     @PostMapping
     @Operation(summary = "회원 가입", description = "사용자를 생성합니다.")
     public ResponseEntity<UserResponseDto> signup(@Valid @RequestBody UserSignupRequestDto req) {
@@ -45,6 +50,14 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "내 정보 조회", description = "로그인된 사용자의 정보를 조회합니다.")
+    public ResponseEntity<OAuthUserResponseDto> getMyInfo(
+            @AuthenticationPrincipal PrincipalUser principalUser
+    ) {
+        return ResponseEntity.ok(new OAuthUserResponseDto(principalUser.getUser()));
     }
 
 }
