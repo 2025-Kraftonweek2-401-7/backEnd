@@ -35,6 +35,8 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON 직렬화 지원
 
 	runtimeOnly 'org.postgresql:postgresql'
+	testRuntimeOnly 'org.postgresql:postgresql'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	implementation 'org.apache.commons:commons-lang3:3.13.0'
