@@ -1,11 +1,13 @@
 package com.krafton.stamp.controller;
 
 import com.krafton.stamp.domain.Category;
+import com.krafton.stamp.dto.StampCreateRequestDto;
 import com.krafton.stamp.dto.StampResponseDto;
 import com.krafton.stamp.dto.UserStampResponseDto;
 import com.krafton.stamp.service.StampService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -51,6 +53,14 @@ public class StampController {
                 .stream().map(StampResponseDto::new).toList();
         return ResponseEntity.ok(list);
     }
+
+    @PostMapping
+    @Operation(summary = "우표 등록", description = "도감에 새로운 우표를 등록합니다.")
+    public ResponseEntity<StampResponseDto> createStamp(@RequestBody @Valid StampCreateRequestDto req) {
+        var saved = stampService.createStamp(req);
+        return ResponseEntity.ok(new StampResponseDto(saved));
+    }
+
 
 
 }

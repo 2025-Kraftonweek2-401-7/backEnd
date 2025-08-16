@@ -1,6 +1,7 @@
 package com.krafton.stamp.service;
 
 import com.krafton.stamp.domain.*;
+import com.krafton.stamp.dto.StampCreateRequestDto;
 import com.krafton.stamp.repository.StampRepository;
 import com.krafton.stamp.repository.StampUpgradeRepository;
 import com.krafton.stamp.repository.UserRepository;
@@ -121,6 +122,25 @@ public class StampService {
     public List<Stamp> getStampsByCategory(Category category) {
         return stampRepository.findByCategory(category);
     }
+
+    @Transactional
+    public Stamp createStamp(StampCreateRequestDto req) {
+        if (stampRepository.existsBySiteUrl(req.getSiteUrl())) {
+            throw new IllegalArgumentException("이미 해당 사이트의 우표가 존재합니다.");
+        }
+
+        Stamp stamp = Stamp.builder()
+                .name(req.getName())
+                .imageUrl(req.getImageUrl())
+                .siteUrl(req.getSiteUrl())
+                .category(req.getCategory())
+                .rarity(req.getRarity())
+                .description(req.getDescription())
+                .build();
+
+        return stampRepository.save(stamp);
+    }
+
 
 
 }
