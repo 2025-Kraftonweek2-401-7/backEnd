@@ -15,4 +15,5 @@ public interface UserStampRepository extends JpaRepository<UserStamp, Long> {
     @Query("SELECT us FROM UserStamp us JOIN FETCH us.stamp WHERE us.user.id = :userId")
     List<UserStamp> findByUserIdWithStamp(@Param("userId") Long userId);
 
+
 }
