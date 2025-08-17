@@ -42,7 +42,7 @@ jobs:
       # ✅ 테스트 프로파일 + Postgres + JWT 시크릿
       - name: Use test profile + override datasource to Postgres
         run: |
-          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/testdb" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/testdb" >> $GITHUB_ENV
           echo "SPRING_DATASOURCE_USERNAME=testuser" >> $GITHUB_ENV
           echo "SPRING_DATASOURCE_PASSWORD=testpass" >> $GITHUB_ENV
           echo "SPRING_DATASOURCE_DRIVER=org.postgresql.Driver" >> $GITHUB_ENV
@@ -51,11 +51,10 @@ jobs:
       - name: Build & Test
         run: ./gradlew clean test -Dspring.profiles.active=test
 
-      # ✅ 테스트 리포트 업로드 스텝 (요거 추가!)
+      # ✅ 테스트 리포트 업로드 스텝
       - name: Upload test report
-        if: always()  # 테스트 실패해도 실행
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: build/reports/tests/test
-
