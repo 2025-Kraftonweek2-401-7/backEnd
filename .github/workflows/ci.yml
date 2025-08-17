@@ -48,6 +48,13 @@ jobs:
           echo "SPRING_DATASOURCE_DRIVER=org.postgresql.Driver" >> $GITHUB_ENV
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
 
-      # ✅ 여기에 넣어야 해
       - name: Build & Test
         run: ./gradlew clean test -Dspring.profiles.active=test
+
+      # ✅ 테스트 리포트 업로드 스텝 (요거 추가!)
+      - name: Upload test report
+        if: always()  # 테스트 실패해도 실행됨
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: build/reports/tests/test
