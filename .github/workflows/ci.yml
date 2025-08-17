@@ -53,8 +53,9 @@ jobs:
 
       # ✅ 테스트 리포트 업로드 스텝 (요거 추가!)
       - name: Upload test report
-        if: always()  # 테스트 실패해도 실행됨
-        uses: actions/upload-artifact@v3
+        if: always()  # 테스트 실패해도 실행
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: build/reports/tests/test
+
