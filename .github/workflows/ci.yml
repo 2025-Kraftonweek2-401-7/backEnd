@@ -53,7 +53,9 @@ jobs:
           echo "    hibernate:" >> src/test/resources/application-test.yml
           echo "      ddl-auto: create-drop" >> src/test/resources/application-test.yml
           echo "  jwt:" >> src/test/resources/application-test.yml
-          echo "    secret: ${{ secrets.JWT_SECRET }}" >> src/test/resources/application-test.yml
+          echo "    secret: \"$JWT_SECRET\"" >> src/test/resources/application-test.yml
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Build & Test
         run: ./gradlew clean test -Dspring.profiles.active=test
