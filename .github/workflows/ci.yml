@@ -39,19 +39,25 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # ✅ 테스트 프로파일 + Postgres + JWT 시크릿
-      - name: Use test profile + override datasource to Postgres
+      - name: Write test profile config
         run: |
-          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/testdb" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_USERNAME=testuser" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_PASSWORD=testpass" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_DRIVER=org.postgresql.Driver" >> $GITHUB_ENV
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+          mkdir -p src/test/resources
+          echo "spring:" > src/test/resources/application-test.yml
+          echo "  datasource:" >> src/test/resources/application-test.yml
+          echo "    url: jdbc:postgresql://localhost:5432/testdb" >> src/test/resources/application-test.yml
+          echo "    username: testuser" >> src/test/resources/application-test.yml
+          echo "    password: testpass" >> src/test/resources/application-test.yml
+          echo "    driver-class-name: org.postgresql.Driver" >> src/test/resources/application-test.yml
+          echo "  jpa:" >> src/test/resources/application-test.yml
+          echo "    database-platform: org.hibernate.dialect.PostgreSQLDialect" >> src/test/resources/application-test.yml
+          echo "    hibernate:" >> src/test/resources/application-test.yml
+          echo "      ddl-auto: create-drop" >> src/test/resources/application-test.yml
+          echo "  jwt:" >> src/test/resources/application-test.yml
+          echo "    secret: ${{ secrets.JWT_SECRET }}" >> src/test/resources/application-test.yml
 
       - name: Build & Test
         run: ./gradlew clean test -Dspring.profiles.active=test
 
-      # ✅ 테스트 리포트 업로드 스텝
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
