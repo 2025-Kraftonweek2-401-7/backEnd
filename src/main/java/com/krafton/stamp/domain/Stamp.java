@@ -8,6 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(
+        name = "stamp",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_stamp_siteurl_rarity",
+                columnNames = {"site_url", "rarity"}
+        )
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Stamp {

@@ -12,6 +12,6 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
     Optional<Stamp> findByName(String name);
     Optional<Stamp> findBySiteUrlAndRarity(String siteUrl, Rarity rarity);
     List<Stamp> findByCategory(Category category);
-    boolean existsBySiteUrl(String siteUrl);
+    boolean existsBySiteUrlAndRarity(String siteUrl, Rarity rarity);
 
 }

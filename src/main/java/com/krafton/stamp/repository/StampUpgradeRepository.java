@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface StampUpgradeRepository extends JpaRepository<StampUpgrade, Long> {
     Optional<StampUpgrade> findByFromStampId(Long fromStampId);
+    boolean existsByFromStampId(Long fromStampId);
 }

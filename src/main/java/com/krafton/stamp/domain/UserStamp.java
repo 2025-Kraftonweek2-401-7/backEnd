@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @Entity
+@Table(
+        name = "user_stamp",
+        uniqueConstraints = @UniqueConstraint(name = "uk_user_stamp", columnNames = {"user_id", "stamp_id"})
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserStamp {
     @Id
@@ -46,6 +50,14 @@ public class UserStamp {
         else if (count >= 15) return 3;
         else if (count >= 5) return 2;
         else return 1;
+    }
+    public void decreaseCount(int amount) {
+        if (amount <= 0) return;
+        if (this.count < amount) {
+            throw new IllegalStateException("업그레이드에 필요한 수량이 부족합니다. (필요: " + amount + ", 보유: " + this.count + ")");
+        }
+        this.count -= amount;
+        this.level = calculateLevelFromCount(this.count); // 레벨 재계산
     }
 }
 

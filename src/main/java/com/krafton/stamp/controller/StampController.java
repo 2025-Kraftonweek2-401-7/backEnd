@@ -61,6 +61,4 @@ public class StampController {
         return ResponseEntity.ok(new StampResponseDto(saved));
     }
 
-
-
 }
