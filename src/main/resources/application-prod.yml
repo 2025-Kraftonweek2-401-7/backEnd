@@ -16,3 +16,6 @@ springdoc:
     enabled: true
 jwt:
   secret: ${jwt.secret}
+
+server:
+  forward-headers-strategy: framework

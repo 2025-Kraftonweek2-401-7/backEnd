@@ -14,6 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+// ✨ 추가 import
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,15 +26,22 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// ✨ CORS import
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 @OpenAPIDefinition(
         info = @Info(title = "Stamp API", version = "v1"),
-        security = @SecurityRequirement(name = "bearerAuth") // <- 이거 필수!
+        security = @SecurityRequirement(name = "bearerAuth")
 )
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // ⬅️ 커스텀 필터
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomOAuth2UserService oAuth2UserService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -38,6 +49,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -51,7 +63,6 @@ public class SecurityConfig {
                 );
     }
 
-
     @Bean
     public AuthenticationSuccessHandler jwtSuccessHandler() {
         return new JwtOAuth2SuccessHandler(jwtTokenProvider);
@@ -60,6 +71,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // ✨ CORS 활성화
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**")
                         .disable()
@@ -71,18 +84,20 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // ✨ 프리플라이트(OPTIONS) 전부 허용
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .requestMatchers(
                                 "/",
-                                "/login",
+                                "/login", "/login/**",
                                 "/oauth2/**",
                                 "/api/auth/**",
                                 "/jwt-test.html",
-                                // Swagger 허용
-                                "/swagger-ui.html",      // ★ 이 줄 추가
+                                // Swagger
+                                "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
-                                // (아래 둘은 예전 springfox용, 있어도 무해)
                                 "/swagger-resources/**",
                                 "/webjars/**",
                                 "/h2-console/**"
@@ -108,6 +123,19 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // ✨ CORS 전역 설정 (확장프로그램/웹앱에서 Authorization 헤더, POST 허용)
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
+        // 초기엔 넓게 열고, 나중에 실제 도메인으로 좁히세요.
+        cfg.setAllowedOriginPatterns(List.of("*")); // chrome-extension://<id>, https://developer-stamp... 모두 허용
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization","Content-Type"));
+        cfg.setAllowCredentials(false); // 쿠키 안 쓰고 Bearer 헤더만 쓸 거면 false 권장
+        cfg.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+        src.registerCorsConfiguration("/**", cfg);
+        return src;
+    }
 }
-
-
