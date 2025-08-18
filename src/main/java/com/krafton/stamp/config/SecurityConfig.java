@@ -71,7 +71,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/h2-console/**", "/login", "/oauth2/**", "/api/auth/**", "/jwt-test.html", "/swagger-ui/**","/v3/api-docs/**","/swagger-resources/**","/webjars/**").permitAll()
+                        .requestMatchers("/", "/h2-console/**", "/login", "/oauth2/**", "/api/auth/**", "/jwt-test.html", "/swagger-ui/**","/v3/api-docs/**","/swagger-resources/**","/webjars/**",  "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("dev") // ✅ dev 환경에서만 실행
+
 @RequiredArgsConstructor
 public class MissionSeeder implements CommandLineRunner {
 

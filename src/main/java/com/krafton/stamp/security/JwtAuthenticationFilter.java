@@ -26,54 +26,50 @@ import org.slf4j.LoggerFactory;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository; // ⭐️ 추가 필요
+    private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
+    private boolean isWhitelisted(String uri) {
+        return uri.equals("/") ||
+                uri.equals("/swagger-ui.html") ||
+                uri.startsWith("/swagger-ui") ||
+                uri.equals("/v3/api-docs") ||
+                uri.startsWith("/v3/api-docs") ||
+                uri.startsWith("/swagger-resources") ||
+                uri.startsWith("/webjars") ||
+                uri.startsWith("/h2-console") ||
+                uri.startsWith("/login") ||
+                uri.startsWith("/oauth2") ||
+                uri.startsWith("/api/auth");
+    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
+        String uri = req.getRequestURI();
+        if (isWhitelisted(uri)) { chain.doFilter(req, res); return; }
 
-        String uri = request.getRequestURI();
-
-        // ✅ 로그인과 OAuth2 경로는 JWT 필터 제외
-        if (uri.startsWith("/login") || uri.startsWith("/oauth2")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String bearer = request.getHeader("Authorization");
-
+        String bearer = req.getHeader("Authorization");
         try {
             if (bearer != null && bearer.startsWith("Bearer ")) {
-                String token = bearer.substring(7);
-
+                var token = bearer.substring(7);
                 if (jwtTokenProvider.validateToken(token)) {
-                    String userId = jwtTokenProvider.getUserId(token);
-
-                    User user = userRepository.findById(Long.parseLong(userId))
+                    var userId = jwtTokenProvider.getUserId(token);
+                    var user = userRepository.findById(Long.parseLong(userId))
                             .orElseThrow(() -> new RuntimeException("User not found"));
-                    PrincipalUser principalUser = new PrincipalUser(user);
-
-                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(principalUser, null, authorities);
-
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    var auth = new UsernamePasswordAuthenticationToken(
+                            new PrincipalUser(user), null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
         } catch (Exception e) {
-            logger.warn("JWT 인증 실패: {}", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Invalid or expired token.\"}");
-            return;
+            // ❌ 여기서 401 쓰지 말 것
+            SecurityContextHolder.clearContext();
         }
-
-        filterChain.doFilter(request, response);
+        chain.doFilter(req, res);
     }
 
 }
+
 

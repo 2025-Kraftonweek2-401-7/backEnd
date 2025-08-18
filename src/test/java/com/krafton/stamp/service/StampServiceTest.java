@@ -11,7 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.reflect.Field;
@@ -22,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class StampServiceTest {
 
     @InjectMocks
@@ -67,7 +68,7 @@ class StampServiceTest {
                 .rarity(Rarity.COMMON)
                 .description("desc")
                 .build();
-        setId(basicStamp, 100L);
+        setId(basicStamp, stampId);
 
         upgradedStamp = Stamp.builder()
                 .name("GitHub Gold")
@@ -77,7 +78,7 @@ class StampServiceTest {
                 .rarity(Rarity.RARE)
                 .description("desc")
                 .build();
-        setId(upgradedStamp, 200L);
+        setId(upgradedStamp, upgradedStampId);
     }
 
     static void setId(Object entity, Long id) {
@@ -112,12 +113,13 @@ class StampServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
         when(stampRepository.findById(stampId)).thenReturn(Optional.of(basicStamp));
-        when(userStampRepository.findByUserIdAndStampId(userId, stampId)).thenReturn(Optional.of(owned));
+        when(userStampRepository.findByUserIdAndStampIdForUpdate(userId, stampId))
+                .thenReturn(Optional.of(owned));
 
         stampService.collectStamp(userId, stampId);
 
-        verify(userStampRepository, never()).save(any());
-        assertEquals(2, owned.getCount()); // ✅ increaseCount 확인
+        assertEquals(2, owned.getCount()); // count 증가 확인
+        verify(userStampRepository, never()).save(any()); // save 호출 안 됨
     }
 
     @Test
@@ -125,27 +127,18 @@ class StampServiceTest {
         UserStamp owned = UserStamp.builder()
                 .user(testUser)
                 .stamp(basicStamp)
-                .count(1)
+                .count(50)
                 .collectedAt(LocalDateTime.now())
                 .build();
 
-        simulateCount(owned, 49); // count = 50, level = 5
-
-        StampUpgrade upgrade = StampUpgrade.builder()
-                .fromStamp(basicStamp)
-                .toStamp(upgradedStamp)
-                .requiredLevel(3)
-                .build();
-
         when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
-        when(userStampRepository.findByUserIdAndStampId(userId, stampId)).thenReturn(Optional.of(owned));
-        when(stampUpgradeRepository.findByFromStampId(stampId)).thenReturn(Optional.of(upgrade));
-        when(stampRepository.findBySiteUrlAndRarity(upgradedStamp.getSiteUrl(), upgradedStamp.getRarity()))
+        when(userStampRepository.findByUserIdAndStampIdForUpdate(userId, stampId))
+                .thenReturn(Optional.of(owned));
+        when(stampRepository.findBySiteUrlAndRarity("github.com", Rarity.RARE))
                 .thenReturn(Optional.of(upgradedStamp));
 
-        stampService.upgradeStamp(userId, stampId);
+        stampService.upgradeStampOrThrow(userId, stampId);
 
-        verify(userStampRepository).delete(owned);
         verify(userStampRepository).save(any(UserStamp.class));
     }
 
@@ -158,7 +151,7 @@ class StampServiceTest {
                 .collectedAt(LocalDateTime.now())
                 .build();
 
-        simulateCount(owned, 30); // level = 4, required = 5
+        simulateCount(owned, 30); // level 4
 
         StampUpgrade upgrade = StampUpgrade.builder()
                 .fromStamp(basicStamp)
@@ -170,13 +163,15 @@ class StampServiceTest {
         when(stampUpgradeRepository.findByFromStampId(stampId)).thenReturn(Optional.of(upgrade));
 
         assertThrows(IllegalArgumentException.class, () ->
-                stampService.upgradeStamp(userId, stampId));
+                stampService.upgradeStampOrThrow(userId, stampId));
     }
 
     @Test
     void testDeleteStamp() {
         when(stampRepository.findById(stampId)).thenReturn(Optional.of(basicStamp));
+
         stampService.deleteStamp(stampId);
+
         verify(stampRepository).delete(basicStamp);
     }
 

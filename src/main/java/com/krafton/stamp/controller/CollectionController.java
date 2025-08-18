@@ -1,5 +1,6 @@
 package com.krafton.stamp.controller;
 
+import com.krafton.stamp.domain.Category;
 import com.krafton.stamp.domain.Rarity;
 import com.krafton.stamp.dto.StampCollectRequestDto;
 import com.krafton.stamp.dto.UserStampResponseDto;
@@ -83,6 +84,46 @@ public class CollectionController {
         Long userId = principalUser.getUser().getId();
         var results = stampService.upgradeAllEligible(userId);
         return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/api/me/stamps/category/{category}")
+    @Operation(summary = "카테고리별 내 우표 목록", description = "해당 카테고리로 내가 모은 우표들을 반환합니다.")
+    public ResponseEntity<List<UserStampResponseDto>> myStampsByCategory(
+            @AuthenticationPrincipal PrincipalUser principalUser,
+            @PathVariable Category category
+    ) {
+        Long userId = principalUser.getUser().getId();
+        var list = stampService.getMyStampsByCategory(userId, category)
+                .stream().map(UserStampResponseDto::new).toList();
+        return ResponseEntity.ok(list);
+    }
+
+    // 간단 DTO
+    public record CategorySummaryDto(
+            Category category,
+            int totalCount,   // 해당 카테고리 전체 수량 합(= sum(count))
+            int distinct,     // 다른 스탬프 개수
+            int common,
+            int rare,
+            int legendary
+    ) {}
+
+    @GetMapping("/api/me/stamps/category/{category}/summary")
+    @Operation(summary = "카테고리 요약", description = "총 수량 합/중복 제외 개수/희귀도 분포를 반환합니다.")
+    public ResponseEntity<CategorySummaryDto> myCategorySummary(
+            @AuthenticationPrincipal PrincipalUser principalUser,
+            @PathVariable Category category
+    ) {
+        Long userId = principalUser.getUser().getId();
+        var stamps = stampService.getMyStampsByCategory(userId, category);
+
+        int total = stampService.getMyCategoryCountSum(userId, category);
+        int distinct = stamps.size();
+        int common = (int) stamps.stream().filter(us -> us.getStamp().getRarity() == Rarity.COMMON).count();
+        int rare = (int) stamps.stream().filter(us -> us.getStamp().getRarity() == Rarity.RARE).count();
+        int legendary = (int) stamps.stream().filter(us -> us.getStamp().getRarity() == Rarity.LEGENDARY).count();
+
+        return ResponseEntity.ok(new CategorySummaryDto(category, total, distinct, common, rare, legendary));
     }
 
 

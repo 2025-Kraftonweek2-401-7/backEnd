@@ -20,6 +20,8 @@ public class StampService {
     private final UserRepository userRepository;
     private final StampRepository stampRepository;
     private final UserStampRepository userStampRepository;
+    private final TitleService titleService;
+    private final ScoreService scoreService;
 
     // ===== 수집 =====
     @Transactional
@@ -29,21 +31,22 @@ public class StampService {
 
         var optional = userStampRepository.findByUserIdAndStampIdForUpdate(user.getId(), stamp.getId());
         if (optional.isPresent()) {
-            optional.get().increaseCount();   // 레벨은 엔티티 내부에서 재계산
+            optional.get().increaseCount();
         } else {
-            userStampRepository.save(
-                    UserStamp.builder()
-                            .user(user)
-                            .stamp(stamp)
-                            .count(1)
-                            .collectedAt(LocalDateTime.now())
-                            .build()
-            );
+            userStampRepository.save(UserStamp.builder()
+                    .user(user).stamp(stamp).count(1).collectedAt(LocalDateTime.now())
+                    .build());
         }
 
-        // ❌ 자동 업그레이드 비활성화 (요청 시에만 수행)
-        // tryUpgradeIfEligible(userStamp);  <-- 제거
+        // ✅ 점수 추가
+        scoreService.addScore(userId,
+                scoreService.pointsForCollect(stamp.getRarity()),
+                "COLLECT", "STAMP", stamp.getId());
+
+        // (이미 넣어둔) 칭호 평가 호출
+        titleService.evaluateAndAward(userId, stamp.getCategory(), stamp.getRarity());
     }
+
 
     // ===== 업그레이드(요청형) =====
     @Transactional
@@ -51,8 +54,60 @@ public class StampService {
         UserStamp userStamp = userStampRepository.findByUserIdAndStampIdForUpdate(userId, fromStampId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 우표를 보유하고 있지 않습니다."));
 
-        doExplicitUpgradeOrThrow(userStamp);
+        Stamp nextStamp = doExplicitUpgradeOrThrow(userStamp); // ✅ 반환 받기
+
+        // 원본 축과, 승급된 축 모두 평가
+        titleService.evaluateAndAward(userId, userStamp.getStamp().getCategory(), userStamp.getStamp().getRarity());
+        titleService.evaluateAndAward(userId, nextStamp.getCategory(), nextStamp.getRarity());
     }
+
+    private Stamp doExplicitUpgradeOrThrow(UserStamp userStamp) {
+        Stamp current = userStamp.getStamp();
+        Rarity from = current.getRarity();
+        Rarity next = nextRarity(from);
+        if (next == null) throw new IllegalStateException("이미 최고 희귀도입니다.");
+
+        int requiredLevel = requiredLevelFor(from);
+        if (userStamp.getLevel() < requiredLevel)
+            throw new IllegalStateException("아직 개수가 부족합니다. (필요 레벨: " + requiredLevel + ", 현재 레벨: " + userStamp.getLevel() + ")");
+
+        int cost = costForUpgrade(from);
+        if (userStamp.getCount() < cost)
+            throw new IllegalStateException("업그레이드에 필요한 수량이 부족합니다. (필요: " + cost + ", 보유: " + userStamp.getCount() + ")");
+
+        Stamp nextStamp = stampRepository.findBySiteUrlAndRarity(current.getSiteUrl(), next)
+                .orElseThrow(() -> new IllegalStateException("상위 희귀도 스탬프가 등록되어 있지 않습니다."));
+
+        // 차감 + 지급
+        userStamp.decreaseCount(cost);
+        giveOne(nextStamp, userStamp.getUser());
+
+        // (선택) 업그레이드 보너스 점수
+        scoreService.addScore(userStamp.getUser().getId(),
+                scoreService.bonusForUpgrade(next),
+                "UPGRADE", "STAMP", nextStamp.getId());
+
+        return nextStamp; // ✅ 반환
+    }
+
+    private int pointsForCollect(Rarity r) {
+        return switch (r) {
+            case COMMON    -> 1;
+            case RARE      -> 3;
+            case EPIC      -> 10;
+            case LEGENDARY -> 25;
+        };
+    }
+
+    private int bonusForUpgrade(Rarity to) { // 선택: 업그레이드 성공 보너스
+        return switch (to) {
+            case COMMON    -> 0;  // 사용 안 함
+            case RARE      -> 5;
+            case EPIC      -> 15;
+            case LEGENDARY -> 40;
+        };
+    }
+
 
     /**
      * 요청형 업그레이드:
@@ -61,36 +116,6 @@ public class StampService {
      * - 상위 희귀도 스탬프를 1개 지급
      * - 원본은 삭제하지 않음(남은 개수 유지)
      */
-    private void doExplicitUpgradeOrThrow(UserStamp userStamp) {
-        Stamp current = userStamp.getStamp();
-        Rarity from = current.getRarity();
-        Rarity next = nextRarity(from);
-        if (next == null) {
-            throw new IllegalStateException("이미 최고 희귀도입니다.");
-        }
-
-        int requiredLevel = requiredLevelFor(from);
-        if (userStamp.getLevel() < requiredLevel) {
-            throw new IllegalStateException("아직 개수가 부족합니다. (필요 레벨: "
-                    + requiredLevel + ", 현재 레벨: " + userStamp.getLevel() + ")");
-        }
-
-        int cost = costForUpgrade(from); // ← 여기서 소모량 정의 (예: COMMON→RARE 는 10개)
-        if (userStamp.getCount() < cost) {
-            throw new IllegalStateException("업그레이드에 필요한 수량이 부족합니다. (필요: "
-                    + cost + ", 보유: " + userStamp.getCount() + ")");
-        }
-
-        // 상위 희귀도 스탬프 존재 확인
-        Stamp nextStamp = stampRepository.findBySiteUrlAndRarity(current.getSiteUrl(), next)
-                .orElseThrow(() -> new IllegalStateException("상위 희귀도 스탬프가 등록되어 있지 않습니다."));
-
-        // 1) 원본에서 'cost' 만큼 차감 (남은 개수 유지)
-        userStamp.decreaseCount(cost);
-
-        // 2) 상위 희귀도 1개 지급 (이미 있으면 count++)
-        giveOne(nextStamp, userStamp.getUser());
-    }
 
     // ===== 헬퍼 =====
 
@@ -122,7 +147,8 @@ public class StampService {
         // 현재 enum: COMMON, RARE, LEGENDARY
         return switch (from) {
             case COMMON -> 2; // Lv2 이상이면 RARE로
-            case RARE -> 4;   // Lv4 이상이면 LEGENDARY로
+            case RARE -> 3;   // Lv3 이상이면 EPIC으로
+            case EPIC -> 4;
             case LEGENDARY -> Integer.MAX_VALUE; // 다음 없음
         };
     }
@@ -132,6 +158,7 @@ public class StampService {
         return switch (from) {
             case COMMON -> 10; // 예: 13개 보유 후 업그레이드 시 10개 소모 → 3개 남김
             case RARE -> 25;   // 예시값(원하면 10 등으로 변경)
+            case EPIC -> 100;
             case LEGENDARY -> Integer.MAX_VALUE;
         };
     }
@@ -142,6 +169,17 @@ public class StampService {
 
     @Transactional(readOnly = true)
     public List<UserStamp> getMyStampsByRarity(Long userId, Rarity rarity) { return userStampRepository.findByUserIdAndRarity(userId, rarity); }
+
+    // StampService.java
+    @Transactional(readOnly = true)
+    public List<UserStamp> getMyStampsByCategory(Long userId, Category category) {
+        return userStampRepository.findByUserIdAndCategory(userId, category);
+    }
+
+    @Transactional(readOnly = true)
+    public int getMyCategoryCountSum(Long userId, Category category) {
+        return userStampRepository.sumCountByUserAndCategory(userId, category);
+    }
 
     @Transactional(readOnly = true)
     public List<Stamp> getStampsByCategory(Category category) { return stampRepository.findByCategory(category); }
@@ -247,6 +285,13 @@ public class StampService {
         Stamp stamp = stampRepository.findBySiteUrlAndRarity(siteUrl, rarity)
                 .orElseThrow(() -> new IllegalStateException("해당 사이트/희귀도의 우표가 등록되어 있지 않습니다."));
         giveOne(stamp, user);  // 이미 있으면 count++, 없으면 생성
+
+        // ✅ 점수
+        scoreService.addScore(userId,
+                scoreService.pointsForCollect(stamp.getRarity()),
+                "COLLECT", "STAMP", stamp.getId());
+
+        titleService.evaluateAndAward(userId, stamp.getCategory(), stamp.getRarity());
     }
 
     @Transactional
@@ -256,5 +301,8 @@ public class StampService {
                 .map(stamp -> { giveOne(stamp, user); return true; })
                 .orElse(false);
     }
+
+
+
 }
 

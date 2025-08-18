@@ -41,7 +41,7 @@ dependencies {
 
 	implementation 'org.apache.commons:commons-lang3:3.13.0'
 
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
 	//구글 로그인
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
