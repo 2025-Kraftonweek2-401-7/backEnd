@@ -1,6 +1,5 @@
 spring:
   profiles:
-    active: dev   # 기본 profile을 dev로 설정
     include: secret  # secret도 항상 포함되게
 
 server:
