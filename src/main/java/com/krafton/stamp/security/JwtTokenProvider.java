@@ -23,6 +23,7 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
+        System.out.println("JWT secret key: " + secretKeyPlain);
         this.secretKey = Keys.hmacShaKeyFor(secretKeyPlain.getBytes());
     }
 
