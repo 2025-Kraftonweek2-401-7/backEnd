@@ -71,7 +71,22 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/h2-console/**", "/login", "/oauth2/**", "/api/auth/**", "/jwt-test.html", "/swagger-ui/**","/v3/api-docs/**","/swagger-resources/**","/webjars/**",  "/v3/api-docs/**").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/login",
+                                "/oauth2/**",
+                                "/api/auth/**",
+                                "/jwt-test.html",
+                                // Swagger 허용
+                                "/swagger-ui.html",      // ★ 이 줄 추가
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                // (아래 둘은 예전 springfox용, 있어도 무해)
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/h2-console/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
