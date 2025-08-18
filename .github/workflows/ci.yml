@@ -11,19 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:15
+      mysql:
+        image: mysql:8
         env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+          MYSQL_ROOT_PASSWORD: rootpass
         ports:
-          - 5432:5432
+          - 3307:3306  # 포트 매핑 (CI용 MySQL은 3307로 접근)
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -ptestpass"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout repository
@@ -34,35 +35,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
+          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Write test profile config
-        run: |
-          mkdir -p src/test/resources
-          echo "spring:" > src/test/resources/application-test.yml
-          echo "  datasource:" >> src/test/resources/application-test.yml
-          echo "    url: jdbc:postgresql://localhost:5432/testdb" >> src/test/resources/application-test.yml
-          echo "    username: testuser" >> src/test/resources/application-test.yml
-          echo "    password: testpass" >> src/test/resources/application-test.yml
-          echo "    driver-class-name: org.postgresql.Driver" >> src/test/resources/application-test.yml
-          echo "  jpa:" >> src/test/resources/application-test.yml
-          echo "    database-platform: org.hibernate.dialect.PostgreSQLDialect" >> src/test/resources/application-test.yml
-          echo "    hibernate:" >> src/test/resources/application-test.yml
-          echo "      ddl-auto: create-drop" >> src/test/resources/application-test.yml
-          echo "  jwt:" >> src/test/resources/application-test.yml
-          echo "    secret: \"$JWT_SECRET\"" >> src/test/resources/application-test.yml
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
-      - name: Build & Test
+      - name: Run tests with test profile
         run: ./gradlew clean test -Dspring.profiles.active=test
-
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: build/reports/tests/test

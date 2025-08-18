@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.krafton.stamp.domain.Category;
 
 @Component
+@Profile("dev")
 @RequiredArgsConstructor
 public class StampSeeder implements CommandLineRunner {
 

@@ -15,6 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Configuration
+@Profile("dev")
 @RequiredArgsConstructor
 public class TitleSeeder {
 
