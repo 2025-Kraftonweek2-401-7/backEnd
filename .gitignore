@@ -53,5 +53,4 @@ coverage/
 
 # === Spring Profiles ===
 application-secret.yml
-application.yml
 aplication-dev.yml
