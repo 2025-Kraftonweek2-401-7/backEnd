@@ -1,6 +1,0 @@
-spring:
-  profiles:
-    include: secret  # secret도 항상 포함되게
-
-server:
-  port: 8080

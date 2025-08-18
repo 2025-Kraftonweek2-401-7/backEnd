@@ -52,7 +52,4 @@ coverage/
 *.lcov
 
 # === Spring Profiles ===
-application-*.yml
-application-*.properties
-src/main/resources/application-secret.yml
-**/application-secret.yml
+application-secret.yml
