@@ -2,16 +2,16 @@ package com.krafton.stamp.service;
 
 import com.krafton.stamp.domain.*;
 import com.krafton.stamp.dto.StampCreateRequestDto;
+import com.krafton.stamp.policy.UpgradePolicy;   // ⬅️ 추가
 import com.krafton.stamp.repository.StampRepository;
 import com.krafton.stamp.repository.UserRepository;
 import com.krafton.stamp.repository.UserStampRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,7 @@ public class StampService {
     private final UserStampRepository userStampRepository;
     private final TitleService titleService;
     private final ScoreService scoreService;
+    private final UpgradePolicy upgradePolicy;   // ⬅️ 주입
 
     // ===== 수집 =====
     @Transactional
@@ -29,34 +30,27 @@ public class StampService {
         User user = getUserOrThrow(userId);
         Stamp stamp = getStampOrThrow(stampId);
 
-        var optional = userStampRepository.findByUserIdAndStampIdForUpdate(user.getId(), stamp.getId());
-        if (optional.isPresent()) {
-            optional.get().increaseCount();
-        } else {
-            userStampRepository.save(UserStamp.builder()
-                    .user(user).stamp(stamp).count(1).collectedAt(LocalDateTime.now())
-                    .build());
-        }
+        // 지급
+        giveOne(stamp, user);
 
-        // ✅ 점수 추가
+        // 점수
         scoreService.addScore(userId,
                 scoreService.pointsForCollect(stamp.getRarity()),
                 "COLLECT", "STAMP", stamp.getId());
 
-        // (이미 넣어둔) 칭호 평가 호출
+        // 칭호
         titleService.evaluateAndAward(userId, stamp.getCategory(), stamp.getRarity());
     }
 
-
-    // ===== 업그레이드(요청형) =====
+    // ===== 업그레이드(요청형, 한 단계만) =====
     @Transactional
     public void upgradeStampOrThrow(Long userId, Long fromStampId) {
         UserStamp userStamp = userStampRepository.findByUserIdAndStampIdForUpdate(userId, fromStampId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 우표를 보유하고 있지 않습니다."));
 
-        Stamp nextStamp = doExplicitUpgradeOrThrow(userStamp); // ✅ 반환 받기
+        Stamp nextStamp = doExplicitUpgradeOrThrow(userStamp); // 1스텝만
 
-        // 원본 축과, 승급된 축 모두 평가
+        // 칭호: 원본과 승급된 축 모두 평가
         titleService.evaluateAndAward(userId, userStamp.getStamp().getCategory(), userStamp.getStamp().getRarity());
         titleService.evaluateAndAward(userId, nextStamp.getCategory(), nextStamp.getRarity());
     }
@@ -67,13 +61,13 @@ public class StampService {
         Rarity next = nextRarity(from);
         if (next == null) throw new IllegalStateException("이미 최고 희귀도입니다.");
 
-        int requiredLevel = requiredLevelFor(from);
+        int requiredLevel = upgradePolicy.requiredLevelFor(from);
         if (userStamp.getLevel() < requiredLevel)
-            throw new IllegalStateException("아직 개수가 부족합니다. (필요 레벨: " + requiredLevel + ", 현재 레벨: " + userStamp.getLevel() + ")");
+            throw new IllegalStateException("레벨 부족: 필요 " + requiredLevel + ", 현재 " + userStamp.getLevel());
 
-        int cost = costForUpgrade(from);
+        int cost = upgradePolicy.costForUpgrade(from);
         if (userStamp.getCount() < cost)
-            throw new IllegalStateException("업그레이드에 필요한 수량이 부족합니다. (필요: " + cost + ", 보유: " + userStamp.getCount() + ")");
+            throw new IllegalStateException("수량 부족: 필요 " + cost + ", 보유 " + userStamp.getCount());
 
         Stamp nextStamp = stampRepository.findBySiteUrlAndRarity(current.getSiteUrl(), next)
                 .orElseThrow(() -> new IllegalStateException("상위 희귀도 스탬프가 등록되어 있지 않습니다."));
@@ -82,40 +76,13 @@ public class StampService {
         userStamp.decreaseCount(cost);
         giveOne(nextStamp, userStamp.getUser());
 
-        // (선택) 업그레이드 보너스 점수
+        // 보너스 점수
         scoreService.addScore(userStamp.getUser().getId(),
                 scoreService.bonusForUpgrade(next),
                 "UPGRADE", "STAMP", nextStamp.getId());
 
-        return nextStamp; // ✅ 반환
+        return nextStamp; // 1단계만
     }
-
-    private int pointsForCollect(Rarity r) {
-        return switch (r) {
-            case COMMON    -> 1;
-            case RARE      -> 3;
-            case EPIC      -> 10;
-            case LEGENDARY -> 25;
-        };
-    }
-
-    private int bonusForUpgrade(Rarity to) { // 선택: 업그레이드 성공 보너스
-        return switch (to) {
-            case COMMON    -> 0;  // 사용 안 함
-            case RARE      -> 5;
-            case EPIC      -> 15;
-            case LEGENDARY -> 40;
-        };
-    }
-
-
-    /**
-     * 요청형 업그레이드:
-     * - 현재 희귀도의 '필요 레벨'을 만족해야 함
-     * - 현재 희귀도의 '소모 개수'를 원본 count에서 차감
-     * - 상위 희귀도 스탬프를 1개 지급
-     * - 원본은 삭제하지 않음(남은 개수 유지)
-     */
 
     // ===== 헬퍼 =====
 
@@ -135,42 +102,19 @@ public class StampService {
         }
     }
 
-    // 희귀도 진행 (enum 순서 기준)
     private Rarity nextRarity(Rarity r) {
         Rarity[] vals = Rarity.values();
         int i = r.ordinal();
         return (i + 1 < vals.length) ? vals[i + 1] : null;
     }
 
-    /** 업그레이드 '레벨' 요구치 — 정책 숫자만 바꾸면 됨 */
-    private int requiredLevelFor(Rarity from) {
-        // 현재 enum: COMMON, RARE, LEGENDARY
-        return switch (from) {
-            case COMMON -> 2; // Lv2 이상이면 RARE로
-            case RARE -> 3;   // Lv3 이상이면 EPIC으로
-            case EPIC -> 4;
-            case LEGENDARY -> Integer.MAX_VALUE; // 다음 없음
-        };
-    }
-
-    /** 업그레이드 '소모 개수' — 여기 정책으로 10개 소모 등을 통제 */
-    private int costForUpgrade(Rarity from) {
-        return switch (from) {
-            case COMMON -> 10; // 예: 13개 보유 후 업그레이드 시 10개 소모 → 3개 남김
-            case RARE -> 25;   // 예시값(원하면 10 등으로 변경)
-            case EPIC -> 100;
-            case LEGENDARY -> Integer.MAX_VALUE;
-        };
-    }
-
-    // ===== 조회/생성 등 나머지는 기존 그대로 =====
+    // ===== 조회/생성 등 =====
     @Transactional(readOnly = true)
     public List<UserStamp> getMyStamps(Long userId) { return userStampRepository.findByUserIdWithStamp(userId); }
 
     @Transactional(readOnly = true)
     public List<UserStamp> getMyStampsByRarity(Long userId, Rarity rarity) { return userStampRepository.findByUserIdAndRarity(userId, rarity); }
 
-    // StampService.java
     @Transactional(readOnly = true)
     public List<UserStamp> getMyStampsByCategory(Long userId, Category category) {
         return userStampRepository.findByUserIdAndCategory(userId, category);
@@ -195,7 +139,6 @@ public class StampService {
 
     @Transactional
     public Stamp createStamp(StampCreateRequestDto req) {
-        // 중복 검사: (siteUrl, rarity)
         if (stampRepository.existsBySiteUrlAndRarity(req.getSiteUrl(), req.getRarity())) {
             throw new IllegalArgumentException("이미 해당 사이트/희귀도의 우표가 존재합니다.");
         }
@@ -210,7 +153,6 @@ public class StampService {
         return stampRepository.save(stamp);
     }
 
-    // 내부 공통
     private User getUserOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
@@ -220,22 +162,21 @@ public class StampService {
                 .orElseThrow(() -> new IllegalArgumentException("우표를 찾을 수 없습니다."));
     }
 
-    // StampService 내부 아무 클래스/메서드 밖에 추가
     public static record UpgradeResultDto(
             Long fromStampId,
-            Long toStampId,       // 업그레이드 안되면 null
-            boolean upgraded,     // 수행 여부
-            int costConsumed,     // 소모 개수(미수행이면 0)
-            String message        // 사유 또는 "OK"
+            Long toStampId,
+            boolean upgraded,
+            int costConsumed,
+            String message
     ) {}
 
+    /** 배치 업그레이드: 각 스탬프에 대해 '한 단계만' 시도 */
     @Transactional
     public List<UpgradeResultDto> upgradeAllEligible(Long userId) {
         var list = userStampRepository.findByUserIdWithStamp(userId);
         var results = new java.util.ArrayList<UpgradeResultDto>();
 
         for (var us0 : list) {
-            // 잠금 걸고 최신 상태로 다시 로드
             var lockedOpt = userStampRepository.findByUserIdAndStampIdForUpdate(userId, us0.getStamp().getId());
             if (lockedOpt.isEmpty()) {
                 results.add(new UpgradeResultDto(us0.getStamp().getId(), null, false, 0, "보유 기록이 없습니다."));
@@ -249,10 +190,11 @@ public class StampService {
                 continue;
             }
 
-            int requiredLevel = requiredLevelFor(current.getRarity());
-            if (us.getLevel() < requiredLevel) {
+            if (!upgradePolicy.canUpgrade(us)) {
+                int needLv = upgradePolicy.requiredLevelFor(current.getRarity());
+                int needCnt = upgradePolicy.costForUpgrade(current.getRarity());
                 results.add(new UpgradeResultDto(current.getId(), null, false, 0,
-                        "레벨 부족 (필요: " + requiredLevel + ", 현재: " + us.getLevel() + ")"));
+                        "조건 미충족 (필요Lv=" + needLv + ", 필요수량=" + needCnt + ", 현재Lv=" + us.getLevel() + ", 보유=" + us.getCount() + ")"));
                 continue;
             }
 
@@ -262,16 +204,17 @@ public class StampService {
                 continue;
             }
 
-            int cost = costForUpgrade(current.getRarity());
-            if (us.getCount() < cost) {
-                results.add(new UpgradeResultDto(current.getId(), nextOpt.get().getId(), false, 0,
-                        "수량 부족 (필요: " + cost + ", 현재: " + us.getCount() + ")"));
-                continue;
-            }
-
-            // 수행: 원본에서 cost 차감, 상위 희귀도 1개 지급
+            int cost = upgradePolicy.costForUpgrade(current.getRarity());
             us.decreaseCount(cost);
             giveOne(nextOpt.get(), us.getUser());
+
+            // 보너스 점수 & 칭호 (한 단계만 수행)
+            scoreService.addScore(us.getUser().getId(),
+                    scoreService.bonusForUpgrade(nextOpt.get().getRarity()),
+                    "UPGRADE", "STAMP", nextOpt.get().getId());
+
+            titleService.evaluateAndAward(userId, us.getStamp().getCategory(), us.getStamp().getRarity());
+            titleService.evaluateAndAward(userId, nextOpt.get().getCategory(), nextOpt.get().getRarity());
 
             results.add(new UpgradeResultDto(current.getId(), nextOpt.get().getId(), true, cost, "OK"));
         }
@@ -284,9 +227,8 @@ public class StampService {
         User user = getUserOrThrow(userId);
         Stamp stamp = stampRepository.findBySiteUrlAndRarity(siteUrl, rarity)
                 .orElseThrow(() -> new IllegalStateException("해당 사이트/희귀도의 우표가 등록되어 있지 않습니다."));
-        giveOne(stamp, user);  // 이미 있으면 count++, 없으면 생성
+        giveOne(stamp, user);
 
-        // ✅ 점수
         scoreService.addScore(userId,
                 scoreService.pointsForCollect(stamp.getRarity()),
                 "COLLECT", "STAMP", stamp.getId());
@@ -301,8 +243,4 @@ public class StampService {
                 .map(stamp -> { giveOne(stamp, user); return true; })
                 .orElse(false);
     }
-
-
-
 }
-
