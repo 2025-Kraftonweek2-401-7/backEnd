@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.krafton.stamp.domain.Category;
 
 @Component
-@Profile("dev")
+//@Profile("dev")
 @RequiredArgsConstructor
 public class StampSeeder implements CommandLineRunner {
 
@@ -24,10 +24,10 @@ public class StampSeeder implements CommandLineRunner {
         addStampIfNotExists("GitHub Legend Stamp", "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", "github.com", Rarity.LEGENDARY, Category.BACKEND, "별이 빛나는 GitHub의 전설, 바로 당신");
 
         // ✅ Spring Initializr Stamp
-        addStampIfNotExists("Spring Stamp", "https://start.spring.io/images/icon-spring-initializr.svg", "start.spring.io", Rarity.COMMON, Category.BACKEND, "스프링 프로젝트의 시작은 여기서부터");
-        addStampIfNotExists("Spring Developer Stamp", "https://start.spring.io/images/icon-spring-initializr.svg", "start.spring.io", Rarity.RARE, Category.BACKEND, "Spring Security, JPA도 자유자재!");
-        addStampIfNotExists("Spring Epic Engineer Stamp", "https://start.spring.io/images/icon-spring-initializr.svg", "start.spring.io", Rarity.EPIC, Category.BACKEND, "스프링 부트와 클라우드를 넘나드는 실력자");
-        addStampIfNotExists("Spring Master Stamp", "https://start.spring.io/images/icon-spring-initializr.svg", "start.spring.io", Rarity.LEGENDARY, Category.BACKEND, "Spring 생태계를 정복한 자에게 수여됨");
+        addStampIfNotExists("Spring Stamp", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwsq-7f5BWyog4cdeT1sQaYLVzhJ0o37Up8TjHvVU08WUgfyyMMRMHTVwJ5XReSjyhZa0&usqp=CAU", "start.spring.io", Rarity.COMMON, Category.BACKEND, "스프링 프로젝트의 시작은 여기서부터");
+        addStampIfNotExists("Spring Developer Stamp", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwsq-7f5BWyog4cdeT1sQaYLVzhJ0o37Up8TjHvVU08WUgfyyMMRMHTVwJ5XReSjyhZa0&usqp=CAU", "start.spring.io", Rarity.RARE, Category.BACKEND, "Spring Security, JPA도 자유자재!");
+        addStampIfNotExists("Spring Epic Engineer Stamp", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwsq-7f5BWyog4cdeT1sQaYLVzhJ0o37Up8TjHvVU08WUgfyyMMRMHTVwJ5XReSjyhZa0&usqp=CAU", "start.spring.io", Rarity.EPIC, Category.BACKEND, "스프링 부트와 클라우드를 넘나드는 실력자");
+        addStampIfNotExists("Spring Master Stamp", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwsq-7f5BWyog4cdeT1sQaYLVzhJ0o37Up8TjHvVU08WUgfyyMMRMHTVwJ5XReSjyhZa0&usqp=CAU", "start.spring.io", Rarity.LEGENDARY, Category.BACKEND, "Spring 생태계를 정복한 자에게 수여됨");
 
         // ✅ VS Code Stamp
         addStampIfNotExists("VS Code Stamp", "https://code.visualstudio.com/assets/images/code-stable.png", "code.visualstudio.com", Rarity.COMMON, Category.TOOL, "가볍고 빠른 개발 시작의 동반자");
@@ -42,10 +42,10 @@ public class StampSeeder implements CommandLineRunner {
         addStampIfNotExists("ChatGPT Architect Stamp", "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg", "chat.openai.com", Rarity.LEGENDARY, Category.AI, "AI를 완벽히 도구화한 미래형 인간");
 
         // ✅ GitHub Actions Stamp
-        addStampIfNotExists("Actions Stamp", "https://github.githubassets.com/images/modules/site/features/actions-icon-actions.svg", "github.com/features/actions", Rarity.COMMON, Category.DEVOPS, "간단한 테스트 자동화를 시작했다면");
-        addStampIfNotExists("CI/CD Engineer Stamp", "https://github.githubassets.com/images/modules/site/features/actions-icon-actions.svg", "github.com/features/actions", Rarity.RARE, Category.DEVOPS, "자동화 파이프라인을 자유롭게 다루는 자");
-        addStampIfNotExists("CI Epic Master Stamp", "https://github.githubassets.com/images/modules/site/features/actions-icon-actions.svg", "github.com/features/actions", Rarity.EPIC, Category.DEVOPS, "복잡한 워크플로우도 설계 가능한 중간 보스급");
-        addStampIfNotExists("DevOps God Stamp", "https://github.githubassets.com/images/modules/site/features/actions-icon-actions.svg", "github.com/features/actions", Rarity.LEGENDARY, Category.DEVOPS, "CI/CD 시스템을 지배하는 전설의 DevOps");
+        addStampIfNotExists("Actions Stamp", "https://buly.kr/58Smltz", "github.com/features/actions", Rarity.COMMON, Category.DEVOPS, "간단한 테스트 자동화를 시작했다면");
+        addStampIfNotExists("CI/CD Engineer Stamp", "https://buly.kr/58Smltz", "github.com/features/actions", Rarity.RARE, Category.DEVOPS, "자동화 파이프라인을 자유롭게 다루는 자");
+        addStampIfNotExists("CI Epic Master Stamp", "https://buly.kr/58Smltz", "github.com/features/actions", Rarity.EPIC, Category.DEVOPS, "복잡한 워크플로우도 설계 가능한 중간 보스급");
+        addStampIfNotExists("DevOps God Stamp", "https://buly.kr/58Smltz", "github.com/features/actions", Rarity.LEGENDARY, Category.DEVOPS, "CI/CD 시스템을 지배하는 전설의 DevOps");
 
         // ✅ Tailwind CSS Stamp
         addStampIfNotExists("Tailwind Stamp", "https://tailwindcss.com/favicons/favicon-32x32.png", "tailwindcss.com", Rarity.COMMON, Category.FRONTEND, "빠르게 UI를 그리는 데일리 툴");
@@ -76,6 +76,34 @@ public class StampSeeder implements CommandLineRunner {
         addStampIfNotExists("K8s Operator Stamp", "https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg", "kubernetes.io", Rarity.RARE, Category.DEVOPS, "배포 자동화와 스케일링까지 자유자재");
         addStampIfNotExists("Kubernetes Epic Engineer Stamp", "https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg", "kubernetes.io", Rarity.EPIC, Category.DEVOPS, "Helm과 Istio까지 다루는 고급 DevOps");
         addStampIfNotExists("Kubernetes Sage Stamp", "https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg", "kubernetes.io", Rarity.LEGENDARY, Category.DEVOPS, "클러스터를 다스리는 자, 전설로 남다");
+
+        // ✅ Baekjoon Stamp
+        addStampIfNotExists("Baekjoon Stamp", "https://buly.kr/6BxKete", "acmicpc.net", Rarity.COMMON, Category.LEARNING, "처음으로 입출력 문제를 푼 당신에게");
+        addStampIfNotExists("Baekjoon Solver Stamp", "https://buly.kr/6BxKete", "acmicpc.net", Rarity.RARE, Category.LEARNING, "실버 문제들을 하나씩 풀어내는 성장형 코더");
+        addStampIfNotExists("Baekjoon Epic Coder Stamp", "https://buly.kr/6BxKete", "acmicpc.net", Rarity.EPIC, Category.LEARNING, "골드 문제도 이제는 익숙한 당신");
+        addStampIfNotExists("Baekjoon Grandmaster Stamp", "https://buly.kr/6BxKete", "acmicpc.net", Rarity.LEGENDARY, Category.LEARNING, "Platinum 이상, 알고리즘의 전설에게 수여됩니다");
+
+        // ✅ Programmers Stamp
+        addStampIfNotExists("Programmers Stamp", "https://buly.kr/CWubyHp", "programmers.co.kr", Rarity.COMMON, Category.LEARNING, "코딩 테스트 연습을 시작했다면");
+        addStampIfNotExists("Programmers Challenger Stamp", "https://buly.kr/CWubyHp", "programmers.co.kr", Rarity.RARE, Category.LEARNING, "레벨 2도 이젠 익숙한 당신");
+        addStampIfNotExists("Programmers Epic Solver Stamp", "https://buly.kr/CWubyHp", "programmers.co.kr", Rarity.EPIC, Category.LEARNING, "레벨 3 문제도 완주한 중급 실력자");
+        addStampIfNotExists("Programmers Mastermind Stamp", "https://buly.kr/CWubyHp", "programmers.co.kr", Rarity.LEGENDARY, Category.LEARNING, "채용 연계형 코딩테스트도 통과하는 실력자");
+
+
+        // ✅ Render Stamp
+        addStampIfNotExists("Render Stamp", "https://buly.kr/G3DladO", "render.com", Rarity.COMMON, Category.DEVOPS, "처음으로 Render로 배포해봤다면");
+        addStampIfNotExists("Render Deployer Stamp", "https://buly.kr/G3DladO", "render.com", Rarity.RARE, Category.DEVOPS, "자동 배포와 환경 설정까지 마친 배포러");
+        addStampIfNotExists("Render Epic Engineer Stamp", "https://buly.kr/G3DladO", "render.com", Rarity.EPIC, Category.DEVOPS, "서브도메인, 백엔드/프론트 멀티 배포까지 섭렵한 당신");
+        addStampIfNotExists("Render Architect Stamp", "https://buly.kr/G3DladO", "render.com", Rarity.LEGENDARY, Category.DEVOPS, "빌드, 배포, 캐시, DB까지 모두 자동화한 마스터");
+
+
+        // ✅ AWS Stamp
+        addStampIfNotExists("AWS Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.COMMON, Category.DEVOPS, "처음으로 EC2를 써본 당신에게");
+        addStampIfNotExists("AWS Builder Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.RARE, Category.DEVOPS, "S3, RDS, Route53을 다루는 실전 유저");
+        addStampIfNotExists("AWS Epic Engineer Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.EPIC, Category.DEVOPS, "IAM, VPC, CloudWatch까지 다룰 줄 안다면");
+        addStampIfNotExists("AWS Cloud Architect Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.LEGENDARY, Category.DEVOPS, "인프라를 코드로 관리하는 AWS 마스터");
+
+
     }
 
 
