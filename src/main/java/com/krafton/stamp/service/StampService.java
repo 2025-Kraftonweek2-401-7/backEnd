@@ -29,6 +29,9 @@ public class StampService {
     public void collectStamp(Long userId, Long stampId) {
         User user = getUserOrThrow(userId);
         Stamp stamp = getStampOrThrow(stampId);
+        if (stamp.getRarity() != Rarity.COMMON) {
+            throw new IllegalArgumentException("일반 등급만 자동 수집 가능합니다.");
+        }
 
         // 지급
         giveOne(stamp, user);

@@ -16,4 +16,7 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
 
     // ✅ COMPLETE_SET용: 해당 카테고리/등급의 전체 스탬프 “종류 수”
     int countByCategoryAndRarity(Category category, Rarity rarity);
+
+    // ✅ 희귀도별로 도메인/ID만 projection으로 조회 (카탈로그용)
+    List<StampDomainProjection> findByRarity(Rarity rarity);
 }
