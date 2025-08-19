@@ -13,6 +13,7 @@ public class StampResponseDto {
     private final Rarity rarity;
     private final Category category; // ✅ 추가
     private final String siteUrl;    // ✅ 추가 (도감용 정보라면 유용)
+    private final String description; // ✅ 여기에만 추가하면 끝!
 
     public StampResponseDto(Stamp stamp) {
         this.id = stamp.getId();
@@ -21,5 +22,6 @@ public class StampResponseDto {
         this.rarity = stamp.getRarity();
         this.category = stamp.getCategory(); // ✅
         this.siteUrl = stamp.getSiteUrl();   // ✅
+        this.description = stamp.getDescription(); // ✅ 이 줄 추가!
     }
 }

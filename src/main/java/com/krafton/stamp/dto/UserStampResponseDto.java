@@ -15,6 +15,7 @@ public class UserStampResponseDto {
     private final int count;
     private final int level;
     private final Category category;
+    private final String description;
 
     public UserStampResponseDto(UserStamp userStamp) {
         this.stampId = userStamp.getStamp().getId();
@@ -24,5 +25,6 @@ public class UserStampResponseDto {
         this.count = userStamp.getCount();
         this.level = userStamp.getLevel();
         this.category = userStamp.getStamp().getCategory();
+        this.description = userStamp.getStamp().getDescription();
     }
 }
