@@ -47,7 +47,7 @@ src/
 │ └── static/
 └── test/ # 단위 테스트
 
-
+---
 
 ---
 
@@ -84,7 +84,7 @@ jwt.secret=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 
-
+---
 ### 2. PostgreSQL 실행
 
 ```bash
@@ -92,7 +92,7 @@ GOOGLE_CLIENT_SECRET=
 docker run --name stamp-db -e POSTGRES_DB=stamp \
   -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=yourpassword \
   -p 5432:5432 -d postgres
-
+---
 ### 3. 서버 실행
 ./gradlew build
 
