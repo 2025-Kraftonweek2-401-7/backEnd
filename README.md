@@ -49,8 +49,6 @@ src/
 
 ---
 
----
-
 ## 📦 주요 기능
 
 - ✅ 사용자 인증 (Google OAuth2)
@@ -92,16 +90,19 @@ GOOGLE_CLIENT_SECRET=
 docker run --name stamp-db -e POSTGRES_DB=stamp \
   -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=yourpassword \
   -p 5432:5432 -d postgres
----
-### 3. 서버 실행
-./gradlew build
+```
 
+### 3. 서버 실행
+```
+./gradlew build
+```
 ### API 문서 
 https://developer-stamp-lckq.onrender.com/oauth2/authorization/google (로그인 후 토큰 발급) 
 https://developer-stamp-lckq.onrender.com/swagger-ui/index.html (스웨거)
 
-🧑‍💻 개발자
-| 이름           | 역할                      |
-| ------------ | ----------------------- |
-| 오주영 (OH JUYEONG) | Backend 개발, 아키텍처 설계, 배포 |
+👨‍💻 개발자
+| 이름  | 역할                      |
+| --- | ----------------------- |
+| 오주영 | Backend 개발, 아키텍처 설계, 배포 |
+
 
