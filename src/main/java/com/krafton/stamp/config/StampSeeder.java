@@ -92,24 +92,25 @@ public class StampSeeder implements CommandLineRunner {
 
 
         // ✅ AWS Stamp
-        addStampIfNotExists("AWS Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.COMMON, Category.DEVOPS, "처음으로 EC2를 써본 당신에게");
-        addStampIfNotExists("AWS Builder Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.RARE, Category.DEVOPS, "S3, RDS, Route53을 다루는 실전 유저");
-        addStampIfNotExists("AWS Epic Engineer Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.EPIC, Category.DEVOPS, "IAM, VPC, CloudWatch까지 다룰 줄 안다면");
-        addStampIfNotExists("AWS Cloud Architect Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.LEGENDARY, Category.DEVOPS, "인프라를 코드로 관리하는 AWS 마스터");
+        // 긴 URL: https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png
+        addStampIfNotExists("AWS Stamp", "https://buly.kr/58SnBO4", "aws.amazon.com", Rarity.COMMON, Category.DEVOPS, "처음으로 EC2를 써본 당신에게");
+        addStampIfNotExists("AWS Builder Stamp", "https://buly.kr/58SnBO4", "aws.amazon.com", Rarity.RARE, Category.DEVOPS, "S3, RDS, Route53을 다루는 실전 유저");
+        addStampIfNotExists("AWS Epic Engineer Stamp", "https://buly.kr/58SnBO4", "aws.amazon.com", Rarity.EPIC, Category.DEVOPS, "IAM, VPC, CloudWatch까지 다룰 줄 안다면");
+        addStampIfNotExists("AWS Cloud Architect Stamp", "https://buly.kr/58SnBO4", "aws.amazon.com", Rarity.LEGENDARY, Category.DEVOPS, "인프라를 코드로 관리하는 AWS 마스터");
 
 
         // ✅ Gemini Stamp
-        addStampIfNotExists("Gemini Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.COMMON, Category.AI, "새로운 지식을 탐험하는 AI 동반자");
-        addStampIfNotExists("Gemini Power User Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.RARE, Category.AI, "프롬프트로 세상을 확장하는 탐험가");
-        addStampIfNotExists("Gemini Epic Innovator Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.EPIC, Category.AI, "AI와 함께 창의성을 현실로 만드는 발명가");
-        addStampIfNotExists("Gemini Visionary Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.LEGENDARY, Category.AI, "미래를 내다보는 AI 비전가");
+        addStampIfNotExists("Gemini Stamp", "https://gemini.google.com/favicon.ico", "gemini.google.com", Rarity.COMMON, Category.AI, "새로운 지식을 탐험하는 AI 동반자");
+        addStampIfNotExists("Gemini Power User Stamp", "https://gemini.google.com/favicon.ico", "gemini.google.com", Rarity.RARE, Category.AI, "프롬프트로 세상을 확장하는 탐험가");
+        addStampIfNotExists("Gemini Epic Innovator Stamp", "https://gemini.google.com/favicon.ico", "gemini.google.com", Rarity.EPIC, Category.AI, "AI와 함께 창의성을 현실로 만드는 발명가");
+        addStampIfNotExists("Gemini Visionary Stamp", "https://gemini.google.com/favicon.ico", "gemini.google.com", Rarity.LEGENDARY, Category.AI, "미래를 내다보는 AI 비전가");
 
 
-        //perplexity
-        addStampIfNotExists("Perplexity Stamp", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.COMMON, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
-        addStampIfNotExists("Perplexity Stamp", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.RARE, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
-        addStampIfNotExists("Perplexity Stamp", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.EPIC, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
-        addStampIfNotExists("Perplexity Stamp", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.LEGENDARY, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
+        // ✅ Perplexity Stamp
+        addStampIfNotExists("Perplexity Stamp (Common)", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.COMMON, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
+        addStampIfNotExists("Perplexity Stamp (Rare)", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.RARE, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
+        addStampIfNotExists("Perplexity Stamp (Epic)", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.EPIC, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
+        addStampIfNotExists("Perplexity Stamp (Legendary)", "https://www.perplexity.ai/favicon.ico", "perplexity.ai", Rarity.LEGENDARY, Category.AI, "최신 AI 트렌드를 탐험하는 당신은 AI 리더!");
 
         addStampIfNotExists("자랑스러운 경기인 Stamp", "https://buly.kr/B7aYW6j", "kyonggi.ac.kr", Rarity.COMMON, Category.LEARNING, "지식의 전당에서 꾸준히 배움을 이어가는 자랑스러운 경기인!");
         addStampIfNotExists("자랑스러운 한밭인 Stamp", "https://www.hanbat.ac.kr/images/kor/sub01/sub01_010301_img03.png", "hanbat.ac.kr", Rarity.COMMON, Category.LEARNING, "학문에 대한 열정으로 가득한 자랑스러운 한밭인!");
@@ -117,48 +118,53 @@ public class StampSeeder implements CommandLineRunner {
         addStampIfNotExists("자랑스러운 한신인 Stamp", "https://i.namu.wiki/i/9-rju60Q09IbjvdtbMdbKlxaJ9UbWrOBLFprjWf4xHwlHCkH1_yp-z2IprzyPvlbHy_9pw1k8O43ItzQ93uzsQ.svg", "hs.ac.kr", Rarity.COMMON, Category.LEARNING, "학문의 길을 걷는 따뜻한 지성, 자랑스러운 한신인!");
         addStampIfNotExists("자랑스러운 경희인 Stamp", "https://buly.kr/5fD46pe", "khu.ac.kr", Rarity.COMMON, Category.LEARNING, "학문의 길을 걷는 따뜻한 지성, 자랑스러운 한신인!");
 
-        addStampIfNotExists("Slack Stamp", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.COMMON, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
-        addStampIfNotExists("Slack Stamp", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.RARE, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
-        addStampIfNotExists("Slack Stamp", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.EPIC, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
-        addStampIfNotExists("Slack Stamp", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.LEGENDARY, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
+        // ✅ Slack Stamp
+        addStampIfNotExists("Slack Stamp (Common)", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.COMMON, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
+        addStampIfNotExists("Slack Stamp (Rare)", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.RARE, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
+        addStampIfNotExists("Slack Stamp (Epic)", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.EPIC, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
+        addStampIfNotExists("Slack Stamp (Legendary)", "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png", "slack.com", Rarity.LEGENDARY, Category.TOOL, "팀워크의 중심! 소통의 달인 Slack 유저!");
 
 
-        addStampIfNotExists("Swagger Stamp", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.COMMON, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
-        addStampIfNotExists("Swagger Stamp", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.RARE, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
-        addStampIfNotExists("Swagger Stamp", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.EPIC, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
-        addStampIfNotExists("Swagger Stamp", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.LEGENDARY, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
+        // ✅ Swagger Stamp
+        addStampIfNotExists("Swagger Stamp (Common)", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.COMMON, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
+        addStampIfNotExists("Swagger Stamp (Rare)", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.RARE, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
+        addStampIfNotExists("Swagger Stamp (Epic)", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.EPIC, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
+        addStampIfNotExists("Swagger Stamp (Legendary)", "https://media.trustradius.com/product-logos/hn/mI/7LD6S38HPGTZ.PNG", "swagger.io", Rarity.LEGENDARY, Category.TOOL, "API 문서화의 정석! Swagger와 함께하는 개발자!");
 
 
-        addStampIfNotExists("IntelliJ Stamp", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.COMMON, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
-        addStampIfNotExists("IntelliJ Stamp", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.RARE, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
-        addStampIfNotExists("IntelliJ Stamp", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.EPIC, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
-        addStampIfNotExists("IntelliJ Stamp", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.LEGENDARY, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
+        // ✅ IntelliJ Stamp
+        addStampIfNotExists("IntelliJ Stamp (Common)", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.COMMON, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
+        addStampIfNotExists("IntelliJ Stamp (Rare)", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.RARE, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
+        addStampIfNotExists("IntelliJ Stamp (Epic)", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.EPIC, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
+        addStampIfNotExists("IntelliJ Stamp (Legendary)", "https://resources.jetbrains.com/storage/products/intellij-idea/img/meta/intellij-idea_logo_300x300.png", "jetbrains.com", Rarity.LEGENDARY, Category.TOOL, "생산성을 극대화하는 당신의 IDE, IntelliJ!");
 
 
-        addStampIfNotExists("Visual Studio Stamp", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Visual_Studio_Icon_2022.svg/1200px-Visual_Studio_Icon_2022.svg.png", "visualstudio.microsoft.com", Rarity.RARE, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
-        addStampIfNotExists("Visual Studio Stamp", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Visual_Studio_Icon_2022.svg/1200px-Visual_Studio_Icon_2022.svg.png", "visualstudio.microsoft.com", Rarity.RARE, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
-        addStampIfNotExists("Visual Studio Stamp", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Visual_Studio_Icon_2022.svg/1200px-Visual_Studio_Icon_2022.svg.png", "visualstudio.microsoft.com", Rarity.RARE, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
-        addStampIfNotExists("Visual Studio Stamp", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Visual_Studio_Icon_2022.svg/1200px-Visual_Studio_Icon_2022.svg.png", "visualstudio.microsoft.com", Rarity.RARE, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
+        // ✅ Visual Studio Stamp
+        // 긴 URL: https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Visual_Studio_Icon_2022.svg/1200px-Visual_Studio_Icon_2022.svg.png
+        addStampIfNotExists("Visual Studio Stamp (Common)", "https://buly.kr/FhOG2KH", "visualstudio.microsoft.com", Rarity.COMMON, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
+        addStampIfNotExists("Visual Studio Stamp (Rare)", "https://buly.kr/FhOG2KH", "visualstudio.microsoft.com", Rarity.RARE, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
+        addStampIfNotExists("Visual Studio Stamp (Epic)", "https://buly.kr/FhOG2KH", "visualstudio.microsoft.com", Rarity.EPIC, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
+        addStampIfNotExists("Visual Studio Stamp (Legendary)", "https://buly.kr/FhOG2KH", "visualstudio.microsoft.com", Rarity.LEGENDARY, Category.TOOL, "강력한 도구로 개발 세계를 탐험하는 당신!");
 
         addStampIfNotExists("크래프톤 정글 Stamp", "https://cdn.sayun.studio/boottent/files/images/events/jiymlab/103c5545-4070-4aae-8217-703ef8b6775f.png", "jungle-compass.krafton.com", Rarity.EPIC, Category.TOOL, "정글을 헤치고 나아가는 성장형 개발자!");
 
         addStampIfNotExists("Python Stamp", "https://images.icon-icons.com/1508/PNG/512/python_104451.png", "python.org", Rarity.COMMON, Category.BACKEND, "간결하고 우아한 코드를 지향하는 파이썬 유저!");
         addStampIfNotExists("Java Stamp", "https://images.icon-icons.com/2699/PNG/512/java_logo_icon_169577.png", "oracle.com", Rarity.COMMON, Category.BACKEND, "한 줄 한 줄 성실하게 쌓아올리는 자바 개발자!");
-        addStampIfNotExists("Kotlin Stamp", "https://lh6.googleusercontent.com/proxy/R2iVbiWd6YkkaDBLxR2SgRJCI4P_YemYXGu_xtkw5pz5zWxkfOyPuGJITJLVm6UoH1E-aT5Y0murlQG4gSewi7fr0A", "kotlinlang.org", Rarity.COMMON, Category.BACKEND, "모던한 백엔드를 지향하는 코틀린 마스터!");
-        addStampIfNotExists("JavaScript Stamp", "https://t1.daumcdn.net/cfile/tistory/2149683A58CA6BF313", "nodejs.org", Rarity.COMMON, Category.BACKEND, "언제 어디서나 자유롭게, JS 마법사!");
+        addStampIfNotExists("Kotlin Stamp", "https://kotlinlang.org/assets/images/favicon/apple-touch-icon-120x120.png", "kotlinlang.org", Rarity.COMMON, Category.BACKEND, "모던한 백엔드를 지향하는 코틀린 마스터!");
+        addStampIfNotExists("JavaScript Stamp", "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png", "nodejs.org", Rarity.COMMON, Category.BACKEND, "언제 어디서나 자유롭게, JS 마법사!");
         addStampIfNotExists("Flask Stamp", "https://images.icon-icons.com/3913/PNG/512/flask_logo_icon_248540.png", "flask.palletsprojects.com", Rarity.COMMON, Category.BACKEND, "가볍고 유연한 백엔드를 사랑하는 플라스크 유저!");
-        addStampIfNotExists("Django Stamp", "https://e7.pngegg.com/pngimages/145/694/png-clipart-python-django-scikit-learn-javascript-programming-language-support-machine-angle-text.png", "djangoproject.com", Rarity.COMMON, Category.BACKEND, "빠르게 강력한 웹앱을 만드는 장고 장인!");
+        addStampIfNotExists("Django Stamp", "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Django_logo_2017.svg/1200px-Django_logo_2017.svg.png", "djangoproject.com", Rarity.COMMON, Category.BACKEND, "빠르게 강력한 웹앱을 만드는 장고 장인!");
 
-        addStampIfNotExists("MongoDB Stamp", "https://linux.systemv.pe.kr/wp-content/uploads/2016/06/mongodb.png", "mongodb.com", Rarity.COMMON, Category.DATABASE, "NoSQL 세계를 이끄는 몽고 마스터!");
-        addStampIfNotExists("Redis Stamp", "https://images.icon-icons.com/2415/PNG/512/redis_plain_logo_icon_146366.png", "redis.io", Rarity.COMMON, Category.DATABASE, "데이터 캐시의 정점, 레디스를 지배하는 자!");
-        addStampIfNotExists("MySQL Stamp", "https://i.namu.wiki/i/vkGpBcmks1_NcJW0HUFa6jlwlM6h11B-8nxRRX4bYC703H4nLo7j4dQdRCC32gz8Q-BqRcAnQgFSXMjB8jPohg.svg", "mysql.com", Rarity.COMMON, Category.DATABASE, "전통을 지켜온 관계형 DB의 수호자!");
-        addStampIfNotExists("PostgreSQL Stamp", "https://images.icon-icons.com/2415/PNG/512/postgresql_original_wordmark_logo_icon_146392.png", "postgresql.org", Rarity.COMMON, Category.DATABASE, "정확함과 확장성의 조화, 포스트그레 유저!");
+        addStampIfNotExists("MongoDB Stamp", "https://www.vectorlogo.zone/logos/mongodb/mongodb-icon.svg", "mongodb.com", Rarity.COMMON, Category.DATABASE, "NoSQL 세계를 이끄는 몽고 마스터!");
+        addStampIfNotExists("Redis Stamp", "https://redis.io/images/redis-logo.svg", "redis.io", Rarity.COMMON, Category.DATABASE, "데이터 캐시의 정점, 레디스를 지배하는 자!");
+        addStampIfNotExists("MySQL Stamp", "https://www.mysql.com/common/logos/mysql-logo.svg", "mysql.com", Rarity.COMMON, Category.DATABASE, "전통을 지켜온 관계형 DB의 수호자!");
+        addStampIfNotExists("PostgreSQL Stamp", "https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg", "postgresql.org", Rarity.COMMON, Category.DATABASE, "정확함과 확장성의 조화, 포스트그레 유저!");
 
 
-        addStampIfNotExists("Node.js Stamp", "https://cdn-icons-png.flaticon.com/256/919/919825.png", "nodejs.org", Rarity.COMMON, Category.BACKEND, "백과 프론트를 잇는 JS 풀스택의 핵심!");
+        addStampIfNotExists("Node.js Stamp", "https://nodejs.org/static/images/favicons/favicon.png", "nodejs.org", Rarity.COMMON, Category.BACKEND, "자바스크립트로 웹 서버를 구축하는 백엔드 개발자의 필수 도구!");
         addStampIfNotExists("HTML Stamp", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/800px-HTML5_logo_and_wordmark.svg.png", "developer.mozilla.org", Rarity.COMMON, Category.FRONTEND, "웹의 뼈대를 설계하는 마크업 마스터!");
-        addStampIfNotExists("Bootstrap Stamp", "https://cdn-icons-png.flaticon.com/512/5968/5968672.png", "getbootstrap.com", Rarity.COMMON, Category.FRONTEND, "빠르고 예쁜 UI를 사랑하는 당신에게!");
-        addStampIfNotExists("Vue.js Stamp", "https://cdn-1.webcatalog.io/catalog/vuejs-developers/vuejs-developers-icon-filled-256.png?v=1714781191064", "vuejs.org", Rarity.COMMON, Category.FRONTEND, "선언형 UI의 매력에 빠진 Vue 장인!");
+        addStampIfNotExists("Bootstrap Stamp", "https://getbootstrap.com/docs/5.3/assets/img/favicons/favicon-32x32.png", "getbootstrap.com", Rarity.COMMON, Category.FRONTEND, "빠르고 예쁜 UI를 사랑하는 당신에게!");
+        addStampIfNotExists("Vue.js Stamp", "https://vuejs.org/logo.svg", "vuejs.org", Rarity.COMMON, Category.FRONTEND, "선언형 UI의 매력에 빠진 Vue 장인!");
 
 
     }
@@ -179,11 +185,9 @@ public class StampSeeder implements CommandLineRunner {
                                 .imageUrl(imageUrl)
                                 .siteUrl(siteUrl)
                                 .rarity(rarity)
-                                .category(category)  // ✅ 꼭 포함!
+                                .category(category)
                                 .description(description)
                                 .build()
                 ));
     }
-
-
 }
