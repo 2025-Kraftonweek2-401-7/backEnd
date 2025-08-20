@@ -1,15 +1,15 @@
-#spring:
-##  profiles:
-##    include: secret  # secret도 항상 포함되게
-#
-#server:
-#  port: 8080
+spring:
+#  profiles:
+#    include: secret  # secret도 항상 포함되게
+
 server:
   port: 8080
-
-spring:
-  profiles:
-    active: dev   # 로컬에서는 dev 활성화
-    include: secret
-
-#지금 로컬 개발 중
+#server:
+#  port: 8080
+#
+#spring:
+#  profiles:
+#    active: dev   # 로컬에서는 dev 활성화
+#    include: secret
+#
+##지금 로컬 개발 중
