@@ -151,7 +151,6 @@ public class StampSeeder implements CommandLineRunner {
         addStampIfNotExists("Python Stamp", "https://images.icon-icons.com/1508/PNG/512/python_104451.png", "python.org", Rarity.COMMON, Category.BACKEND, "간결하고 우아한 코드를 지향하는 파이썬 유저!");
         addStampIfNotExists("Java Stamp", "https://images.icon-icons.com/2699/PNG/512/java_logo_icon_169577.png", "oracle.com", Rarity.COMMON, Category.BACKEND, "한 줄 한 줄 성실하게 쌓아올리는 자바 개발자!");
         addStampIfNotExists("Kotlin Stamp", "https://kotlinlang.org/assets/images/favicon/apple-touch-icon-120x120.png", "kotlinlang.org", Rarity.COMMON, Category.BACKEND, "모던한 백엔드를 지향하는 코틀린 마스터!");
-        addStampIfNotExists("JavaScript Stamp", "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png", "nodejs.org", Rarity.COMMON, Category.BACKEND, "언제 어디서나 자유롭게, JS 마법사!");
         addStampIfNotExists("Flask Stamp", "https://images.icon-icons.com/3913/PNG/512/flask_logo_icon_248540.png", "flask.palletsprojects.com", Rarity.COMMON, Category.BACKEND, "가볍고 유연한 백엔드를 사랑하는 플라스크 유저!");
         addStampIfNotExists("Django Stamp", "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Django_logo_2017.svg/1200px-Django_logo_2017.svg.png", "djangoproject.com", Rarity.COMMON, Category.BACKEND, "빠르게 강력한 웹앱을 만드는 장고 장인!");
 
