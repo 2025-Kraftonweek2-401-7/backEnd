@@ -38,7 +38,6 @@ public class StampController {
     }
 
 
-
     @DeleteMapping("/{stampId}")
     @Operation(summary = "우표 삭제", description = "특정 우표를 도감에서 삭제합니다.")
     public ResponseEntity<Void> deleteStamp(@PathVariable Long stampId) {

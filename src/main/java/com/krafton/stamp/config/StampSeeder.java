@@ -104,6 +104,12 @@ public class StampSeeder implements CommandLineRunner {
         addStampIfNotExists("AWS Cloud Architect Stamp", "https://a0.awsstatic.com/libra-css/images/logos/aws_logo_smile_1200x630.png", "aws.amazon.com", Rarity.LEGENDARY, Category.DEVOPS, "인프라를 코드로 관리하는 AWS 마스터");
 
 
+        // ✅ Gemini Stamp
+        addStampIfNotExists("Gemini Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.COMMON, Category.AI, "새로운 지식을 탐험하는 AI 동반자");
+        addStampIfNotExists("Gemini Power User Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.RARE, Category.AI, "프롬프트로 세상을 확장하는 탐험가");
+        addStampIfNotExists("Gemini Epic Innovator Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.EPIC, Category.AI, "AI와 함께 창의성을 현실로 만드는 발명가");
+        addStampIfNotExists("Gemini Visionary Stamp", "https://i.namu.wiki/i/G741c49m7_spX7OwibKiO999-vQ74huCB4J5URGQxJawRpTSdOwWYALtjUunV_7jttM-ZdHYQlPbcHvXQlo7Mg.webp", "gemini.google.com", Rarity.LEGENDARY, Category.AI, "미래를 내다보는 AI 비전가");
+
     }
 
 

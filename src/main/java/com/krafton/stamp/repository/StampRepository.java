@@ -19,4 +19,7 @@ public interface StampRepository extends JpaRepository<Stamp, Long> {
 
     // ✅ 희귀도별로 도메인/ID만 projection으로 조회 (카탈로그용)
     List<StampDomainProjection> findByRarity(Rarity rarity);
+
+    int countByRarity(Rarity rarity);
+
 }

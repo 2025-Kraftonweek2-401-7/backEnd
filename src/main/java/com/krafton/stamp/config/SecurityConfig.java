@@ -93,6 +93,7 @@ public class SecurityConfig {
                                 "/oauth2/**",
                                 "/api/auth/**",
                                 "/jwt-test.html",
+                                "/api/public/*",
                                 // Swagger
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",

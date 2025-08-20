@@ -75,5 +75,24 @@ public interface UserStampRepository extends JpaRepository<UserStamp, Long> {
     int sumCountByUserAndCategoryAndRarity(@Param("userId") Long userId,
                                            @Param("category") Category category,
                                            @Param("rarity") Rarity rarity);
+
+    // 보유 '종류' 수 (중복 제거)
+    @Query("""
+    select count(distinct us.stamp.id)
+    from UserStamp us join us.stamp s
+    where us.user.id = :userId and s.rarity = :rarity
+""")
+    int countDistinctByUserAndRarity(@Param("userId") Long userId,
+                                     @Param("rarity") Rarity rarity);
+
+    // 누적 count 합계
+    @Query("""
+    select coalesce(sum(us.count), 0)
+    from UserStamp us join us.stamp s
+    where us.user.id = :userId and s.rarity = :rarity
+""")
+    int sumCountByUserAndRarity(@Param("userId") Long userId,
+                                @Param("rarity") Rarity rarity);
+
 }
 

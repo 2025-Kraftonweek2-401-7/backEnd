@@ -1,13 +1,13 @@
 package com.krafton.stamp.controller;
 
+import com.krafton.stamp.domain.Category;
 import com.krafton.stamp.domain.Rarity;
+import com.krafton.stamp.domain.Stamp;
+import com.krafton.stamp.repository.StampRepository;
 import com.krafton.stamp.service.StampLookupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,12 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicCatalogController {
 
-    private final StampLookupService lookupService;
+    private final StampLookupService lookupService; // 기존 그대로 사용
+    private final StampRepository stampRepository;  // ⬅️ 추가
 
-    // CORS가 필요하면 전역 CORS 설정 또는 여기서도 허용
-    // @CrossOrigin(origins = "chrome-extension://<EXT_ID>")
-
-    /** ✅ 카탈로그 내려주기: 확장프로그램이 캐시해서 사용 */
+    /**
+     * ✅ 카탈로그 내려주기: 확장프로그램이 캐시해서 사용
+     */
     @GetMapping("/stamp-catalog")
     public ResponseEntity<List<Item>> catalog(
             @RequestParam(name = "rarity", defaultValue = "COMMON") Rarity rarity
@@ -30,22 +30,68 @@ public class PublicCatalogController {
                 .map(p -> new Item(p.getSiteUrl(), p.getId(), p.getRarity()))
                 .toList();
 
-        // 캐싱 힌트(선택): 1시간 캐시
         return ResponseEntity.ok()
                 .header("Cache-Control", "public, max-age=3600")
                 .body(list);
     }
 
-    /** ✅ 단건 조회: host 주면 서버가 규칙에 따라 stampId 찾아줌 */
+    /**
+     * ✅ 단건 조회: host -> stampId 매칭 + 이름/이미지/카테고리 포함
+     */
     @GetMapping("/lookup-stamp")
     public ResponseEntity<LookupRes> lookup(
             @RequestParam("host") String host,
             @RequestParam(name = "rarity", defaultValue = "COMMON") Rarity rarity
     ) {
         Long id = lookupService.lookupStampId(host, rarity);
-        return ResponseEntity.ok(new LookupRes(host, id, rarity, id != null));
+
+        if (id == null) {
+            return ResponseEntity.ok(new LookupRes(
+                    host, null, rarity, false, null, null, null, null
+            ));
+        }
+
+        // ⬇️ stamp 한번 더 조회해서 이름/이미지/카테고리 채움
+        Stamp stamp = stampRepository.findById(id).orElse(null);
+        if (stamp == null) {
+            // id는 찾았는데 레코드가 없으면 matched=false로 안전 처리
+            return ResponseEntity.ok(new LookupRes(
+                    host, id, rarity, false, null, null, null, null
+            ));
+        }
+
+        return ResponseEntity.ok(new LookupRes(
+                host,
+                stamp.getId(),
+                stamp.getRarity(),     // 응답은 실제 스탬프 등급으로 덮어쓰기 (필요 없으면 rarity 사용)
+                true,
+                stamp.getName(),
+                stamp.getImageUrl(),
+                stamp.getImageUrl(),   // thumb128 별도 없으면 임시로 동일 값
+                stamp.getCategory()    // ✅ 추가
+        ));
     }
 
-    public record Item(String domain, Long stampId, Rarity rarity) {}
-    public record LookupRes(String host, Long stampId, Rarity rarity, boolean matched) {}
+    /**
+     * 필요하면 내부 캐시 아이템
+     */
+    public record Item(String domain, Long stampId, Rarity rarity) {
+    }
+
+    /**
+     * ✅ 응답 레코드에 category 추가
+     */
+    public record LookupRes(
+            String host,
+            Long stampId,
+            Rarity rarity,
+            boolean matched,
+            String stampName,
+            String imageUrl,
+            String thumb128,
+            Category category     // ✅ 추가 필드
+    ) {
+    }
+
+
 }

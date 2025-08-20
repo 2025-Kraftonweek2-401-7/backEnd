@@ -42,28 +42,36 @@ public class TitleService {
     }
 
     private boolean meets(Long userId, Title t) {
-        Category c = t.getCategory();
+        Category c = t.getCategory();  // null이면 전체
         Rarity   r = t.getRarity();
 
-        // 기본 가드
-        if (c == null || r == null) return false;
+        if (r == null) return false; // rarity는 필수
 
         return switch (t.getConditionType()) {
             case COMPLETE_SET -> {
-                int owned = userStampRepository.countDistinctByUserAndCategoryAndRarity(userId, c, r);
-                int total = stampRepository.countByCategoryAndRarity(c, r);
+                int owned = (c == null)
+                        ? userStampRepository.countDistinctByUserAndRarity(userId, r)
+                        : userStampRepository.countDistinctByUserAndCategoryAndRarity(userId, c, r);
+                int total = (c == null)
+                        ? stampRepository.countByRarity(r)
+                        : stampRepository.countByCategoryAndRarity(c, r);
                 yield total > 0 && owned >= total;
             }
             case DISTINCT_AT_LEAST -> {
-                int ownedDistinct = userStampRepository.countDistinctByUserAndCategoryAndRarity(userId, c, r);
+                int ownedDistinct = (c == null)
+                        ? userStampRepository.countDistinctByUserAndRarity(userId, r)
+                        : userStampRepository.countDistinctByUserAndCategoryAndRarity(userId, c, r);
                 yield ownedDistinct >= nz(t.getRequiredCount());
             }
             case TOTAL_AT_LEAST -> {
-                int sum = userStampRepository.sumCountByUserAndCategoryAndRarity(userId, c, r);
+                int sum = (c == null)
+                        ? userStampRepository.sumCountByUserAndRarity(userId, r)
+                        : userStampRepository.sumCountByUserAndCategoryAndRarity(userId, c, r);
                 yield sum >= nz(t.getRequiredCount());
             }
         };
     }
+
 
     private int nz(Integer i) { return i == null ? 0 : i; }
 
@@ -81,5 +89,11 @@ public class TitleService {
     public List<UserTitle> getMyTitles(Long userId) {
         return userTitleRepository.findByUserIdWithTitle(userId); // ✅ fetch join 버전
     }
+
+    @Transactional(readOnly = true)
+    public Optional<UserTitle> getRepresentative(Long userId) {
+        return userTitleRepository.findFirstByUserIdAndRepresentativeTrue(userId);
+    }
+
 
 }

@@ -33,15 +33,15 @@ public class TitleSeeder {
                     30
             );
 
-            // ✅ 프론트엔드 칭호: FRONTEND의 DISTINCT 3종 이상 보유
+            // ✅ 프론트엔드 칭호: FRONTEND의 DISTINCT 2종 이상 보유
             upsertTitle(
                     "FRONTEND_COMMON_3DISTINCT",
                     "프론트 장인",
-                    "프론트엔드 COMMON 스탬프 3종 이상 보유 시 획득",
+                    "프론트엔드 COMMON 스탬프 2종 이상 보유 시 획득",
                     Category.FRONTEND,
                     Rarity.COMMON,
                     Title.ConditionType.DISTINCT_AT_LEAST,
-                    3,
+                    2,
                     "https://buly.kr/7mC9UNN",
                     25
             );
@@ -84,6 +84,34 @@ public class TitleSeeder {
                     "https://buly.kr/3CORzBh",
                     50
             );
+
+            // ✅ AI 칭호: AI 카테고리 COMMON 1개 이상 보유
+            upsertTitle(
+                    "AI_COMMON_COLLECTOR",
+                    "AI 개척자",
+                    "AI 카테고리의 COMMON 스탬프를 1개 이상 보유 시 획득",
+                    Category.AI,
+                    Rarity.COMMON,
+                    Title.ConditionType.TOTAL_AT_LEAST,
+                    1,
+                    "https://buly.kr/ai-pioneer",
+                    20
+            );
+
+
+// ✅ 도구(TOOLS) 칭호: TOOLS 카테고리 COMMON 2개 이상 보유
+            upsertTitle(
+                    "TOOLS_COMMON_MINI",
+                    "툴 숙련자",
+                    "TOOLS 카테고리의 COMMON 스탬프 2개 이상 보유",
+                    Category.TOOL,
+                    Rarity.COMMON,
+                    Title.ConditionType.TOTAL_AT_LEAST,
+                    2,
+                    "https://buly.kr/tools-mini",
+                    20
+            );
+
         };
     }
 
