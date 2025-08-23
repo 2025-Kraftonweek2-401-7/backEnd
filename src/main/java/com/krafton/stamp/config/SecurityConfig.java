@@ -12,13 +12,18 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 // ✨ 추가 import
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -88,6 +93,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers(
+                                "/api/extension/redirect",
+                                "/api/extension/code-exchange"
+                        ).permitAll()
+
+                        .requestMatchers(
                                 "/",
                                 "/login", "/login/**",
                                 "/oauth2/**",
@@ -132,6 +142,7 @@ public class SecurityConfig {
         // 초기엔 넓게 열고, 나중에 실제 도메인으로 좁히세요.
         cfg.setAllowedOriginPatterns(List.of("*")); // chrome-extension://<id>, https://developer-stamp... 모두 허용
         cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowedHeaders(List.of("Authorization","Content-Type"));
         cfg.setAllowCredentials(false); // 쿠키 안 쓰고 Bearer 헤더만 쓸 거면 false 권장
         cfg.setMaxAge(3600L);
@@ -139,5 +150,13 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
         src.registerCorsConfiguration("/**", cfg);
         return src;
+
+    }
+
+
+    @Bean
+    @Profile("dev")
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/api/extension/**");
     }
 }

@@ -49,6 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String uri = req.getRequestURI();
         if (isWhitelisted(uri)) { chain.doFilter(req, res); return; }
 
+        //프리플라이트 무조건 통과
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            chain.doFilter(req, res);
+            return;
+        }
+
         String bearer = req.getHeader("Authorization");
         try {
             if (bearer != null && bearer.startsWith("Bearer ")) {
